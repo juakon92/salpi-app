@@ -1,0 +1,7 @@
+{
+  "name": "salpi",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

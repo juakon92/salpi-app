@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'salpi',
+  appId: 'app.web.salpi',
+  appName: 'Salpi',
   webDir: 'www'
 };
 

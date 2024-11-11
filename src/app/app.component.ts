@@ -12,6 +12,6 @@ export class AppComponent {
   private ioniconsService: IoniconsService = inject(IoniconsService);
 
   constructor() {
-    this.ioniconsService.loadAllIcons
+    this.ioniconsService.loadAllIcons();
   }
 }

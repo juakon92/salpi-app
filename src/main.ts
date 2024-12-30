@@ -15,6 +15,14 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { ScreenTrackingService, getAnalytics, provideAnalytics, UserTrackingService } from '@angular/fire/analytics';
 import { Capacitor } from '@capacitor/core';
 
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { IonicStorageModule } from '@ionic/storage-angular';
+
+if (environment.production) {
+  enableProdMode();
+}
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -41,5 +49,7 @@ bootstrapApplication(AppComponent, {
     provideAnalytics(() => getAnalytics() ),
     ScreenTrackingService,
     UserTrackingService,
+    provideAnimationsAsync(),
+    importProvidersFrom(IonicStorageModule.forRoot())
   ],
 });

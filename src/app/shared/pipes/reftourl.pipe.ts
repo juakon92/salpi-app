@@ -9,13 +9,17 @@ export class ReftourlPipe implements PipeTransform {
 
   // Transforma una referencia de archivo en una URL de descarga
   async transform(ref: string) {
-    // Verifica si la referencia ya es una URL (comienza con 'http')
-    if (ref.search('http') == 0) {
-      return ref; // Devuelve la URL directamente si ya está en formato de URL
+    if(ref) {
+      // Verifica si la referencia ya es una URL (comienza con 'http')
+      if (ref.search('http') == 0) {
+        return ref; // Devuelve la URL directamente si ya está en formato de URL
+      }
+      // Si no es una URL, asume que es una referencia en Firebase Storage y obtiene la URL de descarga
+      const url = await this.storageService.getDownloadURL(ref);
+      console.log('transform url -> ', url);
+      return url; // Devuelve la URL de descarga generada
     }
-    // Si no es una URL, asume que es una referencia en Firebase Storage y obtiene la URL de descarga
-    const url = await this.storageService.getDownloadURL(ref);
-    console.log('transform url -> ', url);
-    return url; // Devuelve la URL de descarga generada
+
+    return '';
   }
 }

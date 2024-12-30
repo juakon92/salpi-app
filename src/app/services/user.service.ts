@@ -37,8 +37,8 @@ export class UserService {
           this.user = res;
           this.login = 'login';
           console.log('authState -> ', this.user);
-          
-          this.getRol(); // Obtiene los roles del usuario
+
+          this.getRole(); // Obtiene los roles del usuario
 
           if (this.validateHasProfile) {
             this.getUserProfile(res.uid); // Obtiene el perfil del usuario si es necesario
@@ -92,12 +92,13 @@ export class UserService {
   }
 
   // Obtiene los roles del usuario desde el token de autenticación
-  async getRol() {
+  async getRole() {
     if (this.roles) {
       return this.roles;
     }
     if (this.user) {
       const tokenResult = await this.user.getIdTokenResult(true); // Obtiene los claims del token de autenticación
+      console.log('tokenResult -> ', tokenResult);
       const claims: any = tokenResult.claims;
       if (claims.roles) {
         this.roles = claims.roles;

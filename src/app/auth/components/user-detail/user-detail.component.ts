@@ -31,8 +31,8 @@ export class UserDetailComponent  implements OnInit {
   }
 
   // Método para cambiar el rol del usuario
-  async changeRol(ev: any) {
-    console.log('changeRol -> ', ev.detail.value);
+  async changeRole(ev: any) {
+    console.log('changeRole -> ', ev.detail.value);
     await this.interactionService.showLoading('Actualizando...');
     const roles: any = {};
     this.rolesSelect.forEach( rol => {
@@ -51,14 +51,14 @@ export class UserDetailComponent  implements OnInit {
       uid: this.user.id
     }
     try {
-      const response = await this.functionsService.call<any, any>('appCall', request) // Llama a la función 'appCall' de Firebase para actualizar los roles del usuario
+      const response = await this.functionsService.call<any, any>('setRole', request) // Llama a la función 'setRole' de Firebase para actualizar los roles del usuario
       this.interactionService.dismissLoading();
       this.interactionService.showToast('Rol actualizado con éxito');
       console.log('response -> ', response);
     } catch (error) {
       this.interactionService.dismissLoading();
       this.interactionService.presentAlert('Error', 'No se pudo actualizar el rol del usuario');
-      console.log('changeRol error -> ', error);
+      console.log('changeRole error -> ', error);
     }
   }
 }

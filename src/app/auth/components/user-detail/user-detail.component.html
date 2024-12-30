@@ -16,7 +16,7 @@
 
   <ion-item>
     <ion-select label="Rol" label-placement="floating" multiple
-    (ionChange)="changeRol($event)" [(ngModel)]="rolesSelect">
+    (ionChange)="changeRole($event)" [(ngModel)]="rolesSelect">
       @for (rol of roles; track $index) {
         <ion-select-option [value]="rol">{{rol}}</ion-select-option>
       }

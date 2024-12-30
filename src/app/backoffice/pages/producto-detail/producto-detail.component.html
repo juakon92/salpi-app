@@ -1,0 +1,164 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+    <ion-title>Producto</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/backoffice/ajustes/productos"
+      ></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" color="light">
+  <ion-header collapse="condense">
+    <ion-toolbar color="light">
+      <ion-title size="large">Producto</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-grid fixed>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="11" sizeMd="6">
+        <form #formP [formGroup]="product" (ngSubmit)="save()">
+          <!-- name -->
+          <br />
+          <ion-input
+            type="text"
+            label="Nombre"
+            placeholder=""
+            fill="outline"
+            mode="md"
+            labelPlacement="floating"
+            errorText="Este campo es requerido"
+            formControlName="name"
+          ></ion-input>
+          <br />
+
+          <!-- descripcion -->
+          <ion-textarea
+            type="text"
+            label="Descripción"
+            placeholder=""
+            fill="outline"
+            mode="md"
+            labelPlacement="floating"
+            formControlName="description"
+            autoGrow
+          ></ion-textarea>
+          <br />
+
+          <!-- price -->
+          <ion-input
+            type="number"
+            label="Precio"
+            placeholder=""
+            fill="outline"
+            mode="md"
+            labelPlacement="floating"
+            errorText="Este campo es requerido"
+            formControlName="price"
+          ></ion-input>
+          <br />
+
+          <!-- enlace permanente -->
+          <br />
+          <ion-input
+            type="text"
+            label="Enlace permanente"
+            placeholder=""
+            fill="outline"
+            mode="md"
+            labelPlacement="floating"
+            errorText="Este campo es requerido"
+            formControlName="enlacePermanente"
+          ></ion-input>
+          <br />
+
+          <!-- category -->
+          <ion-select
+            formControlName="category"
+            label="Categoria"
+            placeholder="Selecciona una categoria"
+            fill="outline"
+            mode="md"
+            cancelText="Cancelar"
+            err
+          >
+            @for (category of categories?.docs; track $index) {
+            <ion-select-option [value]="category.data().id">{{
+              category.data().name
+            }}</ion-select-option>
+            }
+          </ion-select>
+          @if (product.controls.category.hasError('required')) {
+          <div>
+            <ion-text color="danger"> Este campo es requerido </ion-text>
+          </div>
+          }
+
+          <div class="content-images">
+            @for (image of product.controls.images.value; track $index) {
+            <div style="position: relative">
+              <img [src]="image" alt="" />
+              <ion-icon
+                (click)="deleteImage(image, $index)"
+                class="icon-remove"
+                name="close"
+                color="ligth"
+              ></ion-icon>
+            </div>
+            }
+          </div>
+
+          <input
+            #inputFile
+            (change)="viewPreview(inputFile)"
+            type="file"
+            multiple
+            style="display: none"
+            accept="image/*"
+          />
+
+          <ion-card mode="ios">
+            <ion-item lines="none">
+              <ion-label>Añadir imágenes</ion-label>
+              <ion-buttons slot="end">
+                <ion-button (click)="inputFile.click()">
+                  <ion-icon slot="icon-only" name="images"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </ion-item>
+          </ion-card>
+
+          <div class="content-images">
+            @for (image of images; track $index) {
+            <div style="position: relative">
+              <img [src]="image | filetourl" alt="" />
+              <ion-icon
+                (click)="remove($index)"
+                class="icon-remove"
+                name="close"
+                color="ligth"
+              ></ion-icon>
+            </div>
+            }
+          </div>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid fixed class="ion-no-padding">
+      <ion-row class="ion-justify-content-end">
+        <ion-col size="12" sizeMd="6" sizeLg="4" class="ion-no-padding">
+          <ion-button [form]="formP" type="submit" expand="block" shape="round">
+            Guardar
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

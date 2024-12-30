@@ -158,7 +158,7 @@ export class AuthenticationService {
         credential = FacebookAuthProvider.credential(token);
         break;
     }
-    // console.log('credentials -> ', credential);
+    console.log('credentials -> ', credential);
     if (credential) {
       return await signInWithCredential(this.auth, credential); // Inicia sesión con las credenciales del token
     }

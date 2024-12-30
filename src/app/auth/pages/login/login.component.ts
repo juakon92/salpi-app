@@ -83,7 +83,7 @@ export class LoginComponent  implements OnInit {
     if (Capacitor.isNativePlatform()) {
       await this.interactionService.showLoading('Procesando...');
       const token = await this.authenticationService.getTokenOfProvider(provider.id);
-      // console.log(`token: ${token} para hacer el login con -> ${provider.id}`);
+      console.log(`token: ${token} para hacer el login con -> ${provider.id}`);
       const response = await this.authenticationService.loginWithTokenOfProvider(provider.id, token);
       this.interactionService.dismissLoading();
 

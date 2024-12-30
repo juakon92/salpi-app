@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/store/carrito"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mapa</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content
+  [fullscreen]="true"
+  [ngStyle]="{
+    '--background': transparency ? 'transparent' : 'var(--ion-color-light)'
+  }"
+>
+  <capacitor-google-map id="map"></capacitor-google-map>
+  @if (!readonly) {
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="getCurrentPosition()">
+      <ion-icon name="locate"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  }
+</ion-content>

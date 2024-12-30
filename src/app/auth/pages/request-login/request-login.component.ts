@@ -1,3 +1,4 @@
+import { log } from './../../../../../node_modules/google-gax/node_modules/@grpc/grpc-js/src/logging';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../../../firebase/authentication.service';
@@ -58,6 +59,7 @@ export class RequestLoginComponent  implements OnInit {
       console.log('credential -> ', credential);
       const token = credential.idToken ? credential.idToken : credential.accessToken;
       this.saveToken(token);
+      console.log('token -> ', token);
     } else {
       this.interactionService.dismissLoading();
     }

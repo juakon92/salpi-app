@@ -32,25 +32,77 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+@import "@ionic/angular/css/palettes/dark.class.css";
+// @import '@ionic/angular/css/palettes/dark.system.css';
+
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
+body {
+  background: transparent !important;
+}
+
 @font-face {
   font-family: "Raleway";
-  src: url('assets/fonts/Raleway/Raleway-Regular.ttf');
+  src: url("assets/fonts/Raleway/Raleway-Regular.ttf");
   font-style: normal;
 }
 
 @font-face {
   font-family: "Raleway";
-  src: url('assets/fonts/Raleway/Raleway-Bold.ttf');
+  src: url("assets/fonts/Raleway/Raleway-Bold.ttf");
   font-style: normal;
   font-weight: bold;
 }
 
 @font-face {
   font-family: "Raleway";
-  src: url('assets/fonts/Raleway/Raleway-Italic.ttf');
+  src: url("assets/fonts/Raleway/Raleway-Italic.ttf");
   font-style: italic;
 }
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+ion-split-pane {
+  --side-max-width: 100 !important;
+  --side-width: 100 !important;
+}
+
+.p-component-overlay {
+  top: 60px !important;
+}
+
+.p-link {
+  border-radius: 100%;
+}
+
+ion-list {
+  background: none !important;
+}
+
+ion-button {
+  text-transform: unset !important;
+  letter-spacing: unset !important;
+}
+
+.p-stepper-toggleable-content,
+.p-stepper-action {
+  background: none !important;
+}
+
+.content-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+
+.pasos .p-stepper-panels {
+  display: none;
+}
+
+p-calendar input {
+  background: var(--ion-color-light);
+  min-width: 300px;
+  text-align: center;
+}

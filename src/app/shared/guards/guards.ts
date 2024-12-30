@@ -40,8 +40,8 @@ export namespace guards {
   }
 
   // Guarda que permite la navegación solo si el usuario tiene uno de los roles especificados en su perfil
-  export const isRol = (roles: Models.Auth.Role[], path: string = '/home') : CanActivateFn => {
-    console.log('isRol -> ', roles);
+  export const isRole = (roles: Models.Auth.Role[], path: string = '/home') : CanActivateFn => {
+    console.log('isRole -> ', roles);
     const validador = async (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
       let valid = false;
       const userService: UserService = inject(UserService);
@@ -68,8 +68,8 @@ export namespace guards {
   }
 
   // Guarda que permite la navegación solo si el usuario tiene uno de los roles especificados en los claims del token
-  export const isRolClaim = (roles: Models.Auth.Role[], path: string = '/home') : CanActivateFn => {
-    console.log('isRolClaim -> ', roles);
+  export const isRoleClaim = (roles: Models.Auth.Role[], path: string = '/home') : CanActivateFn => {
+    console.log('isRoleClaim -> ', roles);
     const validador = async (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
       let valid = false;
       const userService: UserService = inject(UserService);

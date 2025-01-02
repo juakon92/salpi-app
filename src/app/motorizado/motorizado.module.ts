@@ -42,9 +42,10 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { DatefirePipe } from '../shared/pipes/datefire.pipe';
+import { MisPedidosComponent } from './pages/mis-pedidos/mis-pedidos.component';
 
 @NgModule({
-  declarations: [PedidosComponent, PedidoDetailComponent],
+  declarations: [PedidosComponent, PedidoDetailComponent, MisPedidosComponent],
   imports: [
     CommonModule,
     MotorizadoRoutingModule,

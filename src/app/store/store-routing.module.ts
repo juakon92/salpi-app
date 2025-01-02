@@ -16,6 +16,27 @@ const routes: Routes = [
         './components/map-direccion-pedido/map-direccion-pedido.component'
       ).then((m) => m.MapDireccionPedidoComponent),
   },
+  {
+    path: 'mis-pedidos',
+    loadComponent: () =>
+      import('./pages/mis-pedidos/mis-pedidos.component').then(
+        (m) => m.MisPedidosComponent
+      ),
+    canActivate: [guards.isLogin()],
+  },
+  {
+    path: 'pedido/:id',
+    loadComponent: () =>
+      import('./pages/pedido-page/pedido-page.component').then(
+        (m) => m.PedidoPageComponent
+      ),
+    canActivate: [guards.isLogin()],
+  },
+  {
+    path: 'map-recorrido-pedido',
+    loadComponent: () => import('./pages/map-recorrido-pedido/map-recorrido-pedido.component').then((m) => m.MapRecorridoPedidoComponent),
+    canActivate: [guards.isLogin()]
+  }
 ];
 
 @NgModule({

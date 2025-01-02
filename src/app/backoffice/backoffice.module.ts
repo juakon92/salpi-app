@@ -44,6 +44,10 @@ import { ProductosComponent } from './pages/productos/productos.component';
 import { CategoriaDetailComponent } from './pages/categoria-detail/categoria-detail.component';
 import { ProductoDetailComponent } from './pages/producto-detail/producto-detail.component';
 import { SharedModule } from '../shared/shared.module';
+import { PedidosComponent } from './pages/pedidos/pedidos.component';
+import { CalendarModule } from 'primeng/calendar';
+import { PedidoDetailComponent } from './components/pedido-detail/pedido-detail.component';
+import { DatefirePipe } from '../shared/pipes/datefire.pipe';
 
 @NgModule({
   declarations: [
@@ -52,6 +56,8 @@ import { SharedModule } from '../shared/shared.module';
     ProductosComponent,
     CategoriaDetailComponent,
     ProductoDetailComponent,
+    PedidosComponent,
+    PedidoDetailComponent
   ],
   imports: [
     CommonModule,
@@ -86,7 +92,12 @@ import { SharedModule } from '../shared/shared.module';
     IonText,
     IonList,
     IonListHeader,
-    SharedModule
+    SharedModule,
+    CalendarModule,
+    DatefirePipe,
+    IonThumbnail,
+    IonAccordion,
+    IonAccordionGroup,
   ],
 })
 export class BackofficeModule {}

@@ -20,6 +20,12 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+  <key>NSCameraUsageDescription</key>
+	<string>Necesitamos acceder a la camará para que puedas configurar tu foto de perfil.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Permitenos conocer tu ubicación para que puedas seleccionar de manera facil tu ubicación de envío</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Necesitamos acceder a tu galería para que puedas elegir una foto de perfil.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

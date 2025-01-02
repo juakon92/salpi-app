@@ -5,13 +5,15 @@ import { CategoriasComponent } from './pages/categorias/categorias.component';
 import { ProductosComponent } from './pages/productos/productos.component';
 import { CategoriaDetailComponent } from './pages/categoria-detail/categoria-detail.component';
 import { ProductoDetailComponent } from './pages/producto-detail/producto-detail.component';
+import { PedidosComponent } from './pages/pedidos/pedidos.component';
 
 const routes: Routes = [
   {path: 'ajustes', component: AjustesComponent},
   {path: 'ajustes/categorias', component: CategoriasComponent},
   {path: 'ajustes/productos', component: ProductosComponent},
   {path: 'ajustes/categoria-detalle', component: CategoriaDetailComponent},
-  {path: 'ajustes/producto-detalle', component: ProductoDetailComponent}
+  {path: 'ajustes/producto-detalle', component: ProductoDetailComponent},
+  {path: 'pedidos', component: PedidosComponent}
 ];
 
 @NgModule({

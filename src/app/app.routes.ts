@@ -17,8 +17,18 @@ export const routes: Routes = [
     canActivate: [guards.isRoleClaim(['admin'])]
   },
   {
+    path: 'store',
+    loadChildren: () => import('./store/store.module').then((m) => m.StoreModule),
+  },
+  {
+    path: 'motorizado',
+    loadChildren: () => import('./motorizado/motorizado.module').then((m) => m.MotorizadoModule),
+    // proteger rutas
+    canActivate: [guards.isRoleClaim(['dealer'])]
+  },
+  {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'store',
     pathMatch: 'full',
   },
 ];

@@ -59,7 +59,7 @@ export namespace ModelsTienda {
     date?: any;
     uid: string;
     state: StatePedido;
-    motorizado?: {
+    dealer?: {
       uid: string;
       name: string;
       coordinate: LatLng;

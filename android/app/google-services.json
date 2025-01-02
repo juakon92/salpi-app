@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "940158765063",
+    "project_id": "salpiathome",
+    "storage_bucket": "salpiathome.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940158765063:android:0633ce2bb51502a20782a2",
+        "android_client_info": {
+          "package_name": "app.web.salpiathome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940158765063-81pp86oed4fumo2enhj9c9uuritqe88n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI80OwXVIiLEN233gjNtcBZ4nK0NDh3cM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940158765063-81pp86oed4fumo2enhj9c9uuritqe88n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,18 +1,59 @@
 import { Component, inject } from '@angular/core';
-import { IonApp, IonRouterOutlet, IonToolbar, IonMenu, IonSplitPane, IonHeader, IonTitle, IonContent, IonIcon, IonButtons, IonMenuButton } from '@ionic/angular/standalone';
+import {
+  IonApp,
+  IonRouterOutlet,
+  IonSplitPane,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonMenu,
+  IonButtons,
+  IonMenuButton,
+  IonIcon,
+  Platform,
+} from '@ionic/angular/standalone';
 import { IoniconsService } from './services/ionicons.service';
 import { SidemenuComponent } from './shared/components/sidemenu/sidemenu.component';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   standalone: true,
-  imports: [IonButtons, IonIcon, IonMenu, IonContent, IonTitle, IonHeader, IonSplitPane, IonToolbar, IonApp, IonRouterOutlet, IonMenuButton, SidemenuComponent],
+  imports: [
+    IonButtons,
+    IonIcon,
+    IonMenu,
+    IonContent,
+    IonTitle,
+    IonHeader,
+    IonSplitPane,
+    IonToolbar,
+    IonApp,
+    IonRouterOutlet,
+    IonMenuButton,
+    SidemenuComponent,
+  ],
 })
 export class AppComponent {
   private ioniconsService: IoniconsService = inject(IoniconsService);
 
-  constructor() {
+  constructor(private platform: Platform) {
     this.ioniconsService.loadAllIcons();
+    this.initializeApp();
+  }
+
+  async initializeApp() {
+    await this.platform.ready();
+    if (this.platform.is('capacitor')) {
+      SplashScreen.hide();
+      // StatusBar.setOverlaysWebView({ overlay: true });
+      StatusBar.show();
+
+      // StatusBar.setStyle({ style: Style.Light });
+      // StatusBar.setBackgroundColor({color: '#2658b0'})
+    }
   }
 }

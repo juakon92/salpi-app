@@ -69,5 +69,3 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-app/src/main/res/values/secrets.xml

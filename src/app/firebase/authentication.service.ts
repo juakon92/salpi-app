@@ -1,23 +1,38 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-        signOut, authState, updateProfile, updateEmail,
-        sendEmailVerification, reauthenticateWithCredential,
-      verifyBeforeUpdateEmail,
-      updatePassword, sendPasswordResetEmail,
-      deleteUser, signInWithRedirect,
-      GoogleAuthProvider, OAuthProvider, FacebookAuthProvider,
-      OAuthCredential, signInWithCredential, getRedirectResult,
-    } from '@angular/fire/auth';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  authState,
+  updateProfile,
+  updateEmail,
+  sendEmailVerification,
+  reauthenticateWithCredential,
+  verifyBeforeUpdateEmail,
+  updatePassword,
+  sendPasswordResetEmail,
+  deleteUser,
+  signInWithRedirect,
+  GoogleAuthProvider,
+  OAuthProvider,
+  FacebookAuthProvider,
+  OAuthCredential,
+  signInWithCredential,
+  getRedirectResult,
+} from '@angular/fire/auth';
 import { FirestoreService } from './firestore.service';
 import { environment } from 'src/environments/environment';
 import { Browser } from '@capacitor/browser';
 import { Models } from '../models/models';
+import { NotificationsPushService } from '../services/notifications-push.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthenticationService {
   private firestoreService: FirestoreService = inject(FirestoreService);
+  private notificationsPushService = inject(NotificationsPushService);
   auth: Auth = inject(Auth);
   authState = authState(this.auth); // Observa el estado de autenticación del usuario
 
@@ -27,7 +42,11 @@ export class AuthenticationService {
 
   // Crea un usuario con email y contraseña, y envía un correo de verificación
   async createUser(email: string, password: string) {
-    const user = await createUserWithEmailAndPassword(this.auth, email, password);
+    const user = await createUserWithEmailAndPassword(
+      this.auth,
+      email,
+      password
+    );
     await this.sendEmailVerification();
     return user; // Devuelve el usuario creado
   }
@@ -38,8 +57,8 @@ export class AuthenticationService {
   }
 
   // Actualiza el perfil del usuario actual (nombre y foto)
-  updateProfile(data: {displayName?: string, photoURL?: string}) {
-     return updateProfile(this.auth.currentUser, data);
+  updateProfile(data: { displayName?: string; photoURL?: string }) {
+    return updateProfile(this.auth.currentUser, data);
   }
 
   // Actualiza el correo electrónico del usuario actual
@@ -80,6 +99,7 @@ export class AuthenticationService {
 
   // Cierra la sesión del usuario y, opcionalmente, recarga la página
   async logout(reload = true) {
+    await this.notificationsPushService.deleteToken();
     await signOut(this.auth);
     if (reload) {
       window.location.reload();
@@ -93,45 +113,47 @@ export class AuthenticationService {
 
   // Inicia sesión mediante un proveedor externo
   loginWithProvider(providerId: string) {
-     let provider;
-     if (providerId == 'google') {
+    let provider;
+    if (providerId == 'google') {
       provider = new GoogleAuthProvider();
-     }
-     if (providerId == 'apple') {
+    }
+    if (providerId == 'apple') {
       provider = new OAuthProvider('apple.com');
-     }
-     if (providerId == 'facebook') {
+    }
+    if (providerId == 'facebook') {
       provider = new FacebookAuthProvider();
-     }
-     if (provider) {
+    }
+    if (provider) {
       signInWithRedirect(this.auth, provider); // Redirige al usuario para iniciar sesión con el proveedor
-     }
+    }
   }
 
   // Obtiene el token del proveedor para autenticación en una plataforma nativa
   async getTokenOfProvider(providerId: string) {
     console.log('getTokenOfProvider -> ', providerId);
-    return new Promise<string>( async (resolve) => {
+    return new Promise<string>(async (resolve) => {
       try {
         const path = Models.Auth.PathIntentsLogin;
         const data: any = {
           provider: providerId,
-          token: null
-        }
+          token: null,
+        };
         const id = await this.firestoreService.createDocument(path, data); // Crea un documento de intención de inicio de sesión en Firestore
 
         // Observa cambios en el documento para obtener el token del proveedor
-        const s = this.firestoreService.getDocumentChanges<any>(`${path}/${id}`).subscribe( async (response) => {
-          if (response) {
-            if (response.provider == providerId && response.token) {
-              console.log('login with token -> ', response);
-              Browser.close();
-              s.unsubscribe();
-              this.firestoreService.deleteDocument(`${path}/${id}`); // Elimina el documento de intención
-              resolve(response.token); // Resuelve la promesa con el token
+        const s = this.firestoreService
+          .getDocumentChanges<any>(`${path}/${id}`)
+          .subscribe(async (response) => {
+            if (response) {
+              if (response.provider == providerId && response.token) {
+                console.log('login with token -> ', response);
+                Browser.close();
+                s.unsubscribe();
+                this.firestoreService.deleteDocument(`${path}/${id}`); // Elimina el documento de intención
+                resolve(response.token); // Resuelve la promesa con el token
+              }
             }
-          }
-        });
+          });
 
         const link = `https://${environment.firebaseConfig.authDomain}/user/request-login?provider=${providerId}&intentId=${id}`;
         console.log('link -> ', link);
@@ -152,7 +174,7 @@ export class AuthenticationService {
         break;
       case 'apple':
         const OAuth = new OAuthProvider('apple.com');
-        credential = OAuth.credential({idToken: token});
+        credential = OAuth.credential({ idToken: token });
         break;
       case 'facebook':
         credential = FacebookAuthProvider.credential(token);

@@ -4,17 +4,20 @@ import { User } from '@angular/fire/auth';
 import { FirestoreService } from '../firebase/firestore.service';
 import { Models } from '../models/models';
 import { Router } from '@angular/router';
+import { NotificationsPushService } from './notifications-push.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class UserService {
-  private authenticationService: AuthenticationService = inject(AuthenticationService);
-  private firestoreService: FirestoreService = inject(  FirestoreService);
+  private authenticationService: AuthenticationService = inject(
+    AuthenticationService
+  );
+  private firestoreService: FirestoreService = inject(FirestoreService);
+  private notificationsPushService = inject(NotificationsPushService);
   private user: User;
   private userProfile: Models.Auth.UserProfile;
-  private login: 'login' | 'not-login' ;
+  private login: 'login' | 'not-login';
   private roles: any;
 
   validateHasProfile: boolean = true;
@@ -32,7 +35,7 @@ export class UserService {
         return;
       }
       // Se suscribe al estado de autenticación de Firebase
-      this.authenticationService.authState.subscribe( res => {
+      this.authenticationService.authState.subscribe((res) => {
         if (res) {
           this.user = res;
           this.login = 'login';
@@ -43,6 +46,7 @@ export class UserService {
           if (this.validateHasProfile) {
             this.getUserProfile(res.uid); // Obtiene el perfil del usuario si es necesario
           }
+          this.notificationsPushService.init(this.user);
         } else {
           this.user = null;
           this.login = 'not-login';
@@ -54,14 +58,17 @@ export class UserService {
 
   // Método para obtener el perfil del usuario desde Firestore
   async getUserProfile(uid: string) {
-    return new Promise<Models.Auth.UserProfile>( async (resolve) => {
+    return new Promise<Models.Auth.UserProfile>(async (resolve) => {
       if (this.userProfile) {
         resolve(this.userProfile);
         return;
       }
 
       // Obtiene el documento del perfil del usuario desde Firestore
-      const response = await this.firestoreService.getDocument<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`);
+      const response =
+        await this.firestoreService.getDocument<Models.Auth.UserProfile>(
+          `${Models.Auth.PathUsers}/${uid}`
+        );
       if (response.exists()) {
         this.userProfile = response.data();
         resolve(this.userProfile);
@@ -69,8 +76,11 @@ export class UserService {
         // Sincroniza el email del perfil de usuario si es diferente al de Firebase Authentication
         if (this.userProfile.email != this.user.email) {
           console.log('sincronizar email');
-          const updateData = {email: this.user.email};
-          this.firestoreService.updateDocument(`${Models.Auth.PathUsers}/${uid}`, updateData); // Actualiza el email en Firestore
+          const updateData = { email: this.user.email };
+          this.firestoreService.updateDocument(
+            `${Models.Auth.PathUsers}/${uid}`,
+            updateData
+          ); // Actualiza el email en Firestore
         }
       } else {
         this.router.navigate(['/user/completar-registro']); // Redirige al usuario para completar el registro si no hay perfil
@@ -80,7 +90,7 @@ export class UserService {
 
   // Verifica si el usuario está autenticado
   isLogin() {
-    return new Promise<boolean>( async (resolve) => {
+    return new Promise<boolean>(async (resolve) => {
       console.log('isLogin');
       const user = await this.getState();
       if (user) {

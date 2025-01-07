@@ -53,6 +53,7 @@ import { ItemCarritoComponent } from './components/item-carrito/item-carrito.com
 import { DatosPedidoComponent } from './components/datos-pedido/datos-pedido.component';
 import { FechaPedidoComponent } from './components/fecha-pedido/fecha-pedido.component';
 import { DireccionPedidoComponent } from './components/direccion-pedido/direccion-pedido.component';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { DireccionPedidoComponent } from './components/direccion-pedido/direccio
     StepperModule,
     ItemCarritoComponent,
     DatosPedidoComponent,
-    DireccionPedidoComponent
+    DireccionPedidoComponent,
+    NotificationsModule
   ],
 })
 export class StoreModule {}

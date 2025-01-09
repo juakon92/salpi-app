@@ -1,4 +1,3 @@
-import { log } from './../../../../../node_modules/google-gax/node_modules/@grpc/grpc-js/src/logging';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../../../firebase/authentication.service';
@@ -14,16 +13,20 @@ import { MenuController } from '@ionic/angular/standalone';
   templateUrl: './request-login.component.html',
   styleUrls: ['./request-login.component.scss'],
 })
-export class RequestLoginComponent  implements OnInit {
-  private authenticationService: AuthenticationService = inject(AuthenticationService); // Inyecta el servicio de autenticación para manejar el inicio de sesión
+export class RequestLoginComponent implements OnInit {
+  private authenticationService: AuthenticationService = inject(
+    AuthenticationService
+  ); // Inyecta el servicio de autenticación para manejar el inicio de sesión
   private firestoreService: FirestoreService = inject(FirestoreService); // Inyecta el servicio FirestoreService para interactuar con la base de datos de Firebase
   userService: UserService = inject(UserService); // Inyecta el servicio UserService para manejar la validación del perfil del usuario
 
   // Constructor con inyección de dependencias para servicios y router
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private interactionService: InteractionService,
-              private menuController: MenuController) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private interactionService: InteractionService,
+    private menuController: MenuController
+  ) {
     this.getQueryParams(); // Obtiene y procesa los parámetros de consulta de la URL
     this.getTokenOfProvider(); // Obtiene el token de autenticación del proveedor
     this.userService.validateHasProfile = false;
@@ -43,21 +46,25 @@ export class RequestLoginComponent  implements OnInit {
       const provider = queryParams.provider;
       await this.interactionService.showLoading('Procesando...');
       this.authenticationService.loginWithProvider(provider);
-      this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}});
+      this.router.navigate(['/user/request-login'], {
+        queryParams: { intentId: queryParams.intentId },
+      });
     }
   }
 
   // Método para obtener el token de autenticación desde el proveedor y guardarlo
   async getTokenOfProvider() {
     await this.interactionService.showLoading('Redirigiendo...');
-    const result =  await this.authenticationService.getRedirectResult();
+    const result = await this.authenticationService.getRedirectResult();
     console.log('getRedirectResult -> ', result);
 
     // Si existe un resultado válido, obtiene las credenciales y guarda el token
     if (result) {
       const credential = OAuthProvider.credentialFromResult(result);
       console.log('credential -> ', credential);
-      const token = credential.idToken ? credential.idToken : credential.accessToken;
+      const token = credential.idToken
+        ? credential.idToken
+        : credential.accessToken;
       this.saveToken(token);
       console.log('token -> ', token);
     } else {
@@ -76,7 +83,10 @@ export class RequestLoginComponent  implements OnInit {
     if (intentId) {
       const path = Models.Auth.PathIntentsLogin;
       const dataUpdate = { token };
-      await this.firestoreService.updateDocument(`${path}/${intentId}`, dataUpdate); // Guarda el token en Firestore
+      await this.firestoreService.updateDocument(
+        `${path}/${intentId}`,
+        dataUpdate
+      ); // Guarda el token en Firestore
       this.authenticationService.logout();
       console.log('guardado token con éxito');
     }

@@ -18,6 +18,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "fast-deep-equal",
+              "localforage"
+            ],
             "outputPath": "www",
             "index": "src/index.html",
             "main": "src/main.ts",

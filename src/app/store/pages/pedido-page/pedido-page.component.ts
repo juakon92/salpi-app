@@ -35,6 +35,7 @@ import { Models } from 'src/app/models/models';
 import { DatefirePipe } from 'src/app/shared/pipes/datefire.pipe';
 import { StepperModule, Stepper } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
+import { NotificationsModule } from 'src/app/notifications/notifications.module';
 
 @Component({
   selector: 'app-pedido-page',
@@ -70,7 +71,8 @@ import { StepsModule } from 'primeng/steps';
     DatefirePipe,
     CommonModule,
     StepperModule,
-    StepsModule
+    StepsModule,
+    NotificationsModule
   ],
 })
 export class PedidoPageComponent implements OnInit, OnDestroy {

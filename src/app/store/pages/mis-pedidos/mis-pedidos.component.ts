@@ -27,6 +27,7 @@ import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { RouterModule } from '@angular/router';
 import { PedidoDetailComponent } from '../../components/pedido-detail/pedido-detail.component';
+import { NotificationsModule } from 'src/app/notifications/notifications.module';
 
 @Component({
   selector: 'app-mis-pedidos',
@@ -54,7 +55,8 @@ import { PedidoDetailComponent } from '../../components/pedido-detail/pedido-det
     IonIcon,
     IonRefresher,
     IonRefresherContent,
-    PedidoDetailComponent
+    PedidoDetailComponent,
+    NotificationsModule
   ],
 })
 export class MisPedidosComponent implements OnInit {

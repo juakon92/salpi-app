@@ -16,7 +16,7 @@ export class PedidosComponent implements OnInit, OnDestroy {
   numItems: number = 2;
   enableMore: boolean = true;
 
-  subscribersPedidos: Subscription[] = [];
+  subscribersPedidos: Subscription[] = []; // Lista de suscripciones activas
 
   constructor() {}
 
@@ -29,6 +29,10 @@ export class PedidosComponent implements OnInit, OnDestroy {
     this.clearSubscribers();
   }
 
+  /**
+   * Inicializa el rango de fechas para filtrar pedidos.
+   * Establece el rango desde el inicio del día actual hasta el final del día.
+   */
   initRange() {
     const start = new Date();
     start.setHours(0);
@@ -39,6 +43,9 @@ export class PedidosComponent implements OnInit, OnDestroy {
     this.changeDate();
   }
 
+  /**
+   * Cambia el rango de fechas y recarga los pedidos correspondientes.
+   */
   changeDate() {
     console.log('changeDate() -> ', this.rangeDates);
     if (this.rangeDates.length == 2) {
@@ -53,6 +60,10 @@ export class PedidosComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Carga más pedidos desde Firestore según el rango de fechas y la paginación.
+   * @param event - Evento opcional para controlar la carga de más datos (scroll infinito).
+   */
   loadMorePedidos(event: any = null) {
     const start = this.rangeDates[0];
     const end = this.rangeDates[1];
@@ -74,7 +85,7 @@ export class PedidosComponent implements OnInit, OnDestroy {
       extras.startAfter = new Date(last.date.seconds * 1000);
     }
 
-    // crear regla e indices
+    // Suscripción para obtener los pedidos desde Firestore
     const subscriberPedidos = this.firestoreService
       .getDocumentsQueryChanges<Models.Tienda.Pedido>(path, query, extras)
       .subscribe((res) => {
@@ -113,12 +124,19 @@ export class PedidosComponent implements OnInit, OnDestroy {
     this.subscribersPedidos.push(subscriberPedidos);
   }
 
+  /**
+   * Maneja el evento de scroll infinito para cargar más pedidos.
+   * @param event - Evento de scroll infinito.
+   */
   async loadMore(event: any) {
     console.log('loadMore');
     this.loadMorePedidos();
     event.target.complete();
   }
 
+  /**
+   * Cancela todas las suscripciones activas y limpia la lista de suscripciones.
+   */
   clearSubscribers() {
     this.subscribersPedidos.forEach((subscriber) => {
       subscriber?.unsubscribe();

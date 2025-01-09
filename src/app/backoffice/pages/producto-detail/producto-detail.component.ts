@@ -17,6 +17,7 @@ export class ProductoDetailComponent implements OnInit {
   private interactionService: InteractionService = inject(InteractionService);
   private storageService: StorageService = inject(StorageService);
 
+  // Formulario reactivo para manejar los datos del producto
   product = new FormGroup({
     name: new FormControl<string>('', [Validators.required]),
     description: new FormControl<string>(''),
@@ -26,10 +27,8 @@ export class ProductoDetailComponent implements OnInit {
     category: new FormControl<string>(null, [Validators.required]),
   });
 
-  categories: QuerySnapshot<Models.Tienda.Category>;
-
+  categories: QuerySnapshot<Models.Tienda.Category>; // Lista de categorías disponibles
   productExist: Models.Tienda.Product;
-
   images: File[] = [];
 
   constructor(private router: Router, private route: ActivatedRoute) {}
@@ -37,6 +36,10 @@ export class ProductoDetailComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  /**
+   * Guarda el producto en Firestore.
+   * Si el producto ya existe, se actualiza; de lo contrario, se crea uno nuevo.
+   */
   async save() {
     console.log('this.product.valid -> ', this.product.valid);
     if (this.product.valid) {
@@ -74,11 +77,17 @@ export class ProductoDetailComponent implements OnInit {
     }
   }
 
+  /**
+   * Carga las categorías disponibles desde Firestore.
+   */
   async loadCategories() {
     const path = Models.Tienda.pathCategories;
     this.categories = await this.firestoreService.getDocuments(path);
   }
 
+  /**
+   * Obtiene los parámetros de consulta para cargar un producto existente.
+   */
   getQueryParams() {
     this.route.queryParams.subscribe((query: any) => {
       if (query.id) {
@@ -87,6 +96,10 @@ export class ProductoDetailComponent implements OnInit {
     });
   }
 
+  /**
+   * Carga un producto específico desde Firestore.
+   * @param id - ID del producto a cargar.
+   */
   async loadProduct(id: string) {
     await this.interactionService.showLoading('Cargando...');
     const path = Models.Tienda.pathProducts;
@@ -111,6 +124,10 @@ export class ProductoDetailComponent implements OnInit {
     }
   }
 
+  /**
+   * Vista previa de las imágenes seleccionadas.
+   * @param input - Elemento de entrada de tipo archivo.
+   */
   async viewPreview(input: HTMLInputElement) {
     if (input.files.length) {
       for (let index = 0; index < input.files.length; index++) {
@@ -121,10 +138,17 @@ export class ProductoDetailComponent implements OnInit {
     }
   }
 
+  /**
+   * Elimina una imagen seleccionada de la lista.
+   * @param index - Índice de la imagen a eliminar.
+   */
   remove(index: number) {
     this.images.splice(index, 1);
   }
 
+  /**
+   * Guarda las imágenes seleccionadas en Firebase Storage.
+   */
   async saveImages() {
     // agregar reglas en storage
     const path = Models.Tienda.folderProducts;
@@ -145,6 +169,11 @@ export class ProductoDetailComponent implements OnInit {
     this.images = [];
   }
 
+  /**
+   * Elimina una imagen específica de Firebase Storage y del formulario.
+   * @param url - URL de la imagen a eliminar.
+   * @param index - Índice de la imagen en la lista.
+   */
   async deleteImage(url: string, index: number) {
     const response = await this.interactionService.presentAlert(
       'Importante',

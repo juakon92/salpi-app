@@ -8,19 +8,37 @@ import { RequestLoginComponent } from './pages/request-login/request-login.compo
 import { UsersComponent } from './pages/users/users.component';
 import { guards } from '../shared/guards/guards';
 
-
 const routes: Routes = [
-  {path: 'login', component: LoginComponent, canActivate: [guards.notLogin('/user/perfil')]},
-  {path: 'request-login', component: RequestLoginComponent},
-  {path: 'registro', component: RegistroComponent, canActivate: [guards.notLogin('/user/perfil')]},
-  {path: 'completar-registro', component: CompletarRegistroComponent, canActivate: [guards.isLogin()]},
-  {path: 'perfil', component: PerfilComponent, canActivate: [guards.isLogin()]},
-  {path: 'admin', component: UsersComponent, canActivate: [guards.isRoleClaim(['admin'])]}
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [guards.notLogin('/user/perfil')],
+  },
+  { path: 'request-login', component: RequestLoginComponent },
+  {
+    path: 'registro',
+    component: RegistroComponent,
+    canActivate: [guards.notLogin('/user/perfil')],
+  },
+  {
+    path: 'completar-registro',
+    component: CompletarRegistroComponent,
+    canActivate: [guards.isLogin()],
+  },
+  {
+    path: 'perfil',
+    component: PerfilComponent,
+    canActivate: [guards.isLogin()],
+  },
+  {
+    path: 'admin',
+    component: UsersComponent,
+    canActivate: [guards.isRoleClaim(['admin'])],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AuthRoutingModule { }
-
+export class AuthRoutingModule {}

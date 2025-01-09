@@ -28,6 +28,10 @@ export class CategoriaDetailComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  /**
+   * Guarda los datos de la categoría en Firestore.
+   * Si la categoría ya existe, actualiza el documento correspondiente. De lo contrario, crea uno nuevo.
+   */
   async save() {
     if (this.categoria.valid) {
       try {
@@ -35,7 +39,7 @@ export class CategoriaDetailComponent implements OnInit {
         const data = this.categoria.value;
         console.log('data -> ', data);
         const path = Models.Tienda.pathCategories;
-        // crear regla en la base de datos
+        // Si la categoría ya existe, actualiza el documento; si no, crea uno nuevo
         if (this.categoriaExist) {
           await this.firestoreService.updateDocument(
             `${path}/${this.categoriaExist.id}`,
@@ -50,7 +54,6 @@ export class CategoriaDetailComponent implements OnInit {
         // navegadar de vuelta a la página de categorias
         this.router.navigate(['/backoffice/ajustes/categorias']);
       } catch (error) {
-        // capturar el error -> pero mostrar en la consola para saber que sucedió
         console.error(error);
         this.interactionService.dismissLoading();
         this.interactionService.presentAlert('Error', 'No se pudo guardar');
@@ -58,6 +61,9 @@ export class CategoriaDetailComponent implements OnInit {
     }
   }
 
+  /**
+   * Obtiene los parámetros de la URL para cargar una categoría si se proporciona un ID.
+   */
   getQueryParams() {
     this.route.queryParams.subscribe((query: any) => {
       if (query.id) {
@@ -66,6 +72,10 @@ export class CategoriaDetailComponent implements OnInit {
     });
   }
 
+  /**
+   * Carga los datos de una categoría específica desde Firestore.
+   * @param id - ID de la categoría a cargar
+   */
   async loadCategory(id: string) {
     await this.interactionService.showLoading('Cargando...');
     const path = Models.Tienda.pathCategories;
@@ -83,6 +93,10 @@ export class CategoriaDetailComponent implements OnInit {
     }
   }
 
+  /**
+   * Actualiza todos los productos asociados a una categoría específica.
+   * Cambia la referencia a la categoría en los productos para reflejar los cambios realizados.
+   */
   async saveCategoryInProducts() {
     const path = Models.Tienda.pathProducts;
     const data = this.categoria.value;

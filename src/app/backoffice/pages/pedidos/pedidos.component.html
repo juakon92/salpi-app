@@ -44,15 +44,6 @@
       } }
     </ion-row>
   </ion-grid>
-
-  <!-- @if (enableMore) {
-        <div class="ion-text-center">
-          <ion-button (click)="loadMorePedidos()" shape="round">
-            loadMorePedidos
-          </ion-button>
-        </div>
-      } -->
-
   <ion-infinite-scroll
     threshold="25%"
     [disabled]="!enableMore"

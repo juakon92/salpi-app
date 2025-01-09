@@ -16,7 +16,7 @@ export class CategoriasComponent implements OnInit, OnDestroy {
 
   cargando: boolean;
   categories: Models.Tienda.Category[];
-  categories$: Observable<Models.Tienda.Category[]>;
+  categories$: Observable<Models.Tienda.Category[]>; // Observable para manejar categorías en tiempo real
 
   s: Subscription;
 
@@ -34,6 +34,10 @@ export class CategoriasComponent implements OnInit, OnDestroy {
     this.s?.unsubscribe();
   }
 
+  /**
+   * Carga las categorías desde Firestore.
+   * Se utiliza un observable para manejar actualizaciones en tiempo real.
+   */
   async loadCategories() {
     const path = Models.Tienda.pathCategories;
     const extras: Models.Firestore.extrasQuery = {
@@ -47,10 +51,17 @@ export class CategoriasComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Navega a la vista de creación de una nueva categoría.
+   */
   newCategorie() {
     this.router.navigate(['/backoffice/ajustes/categoria-detalle']);
   }
 
+  /**
+   * Navega a la vista de edición de una categoría existente.
+   * @param category - Categoría a editar
+   */
   editCategorie(category: Models.Tienda.Category) {
     if (this.enableOptions) {
       this.enableOptions = false;
@@ -62,6 +73,9 @@ export class CategoriasComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Elimina una categoría seleccionada después de confirmar la acción con el usuario.
+   */
   async delete() {
     console.log('delete -> ');
     const response = await this.interactionService.presentAlert(
@@ -83,6 +97,11 @@ export class CategoriasComponent implements OnInit, OnDestroy {
     this.categorySelected = null;
   }
 
+  /**
+   * Muestra opciones para editar o eliminar una categoría seleccionada.
+   * @param event - Evento de clic
+   * @param category - Categoría seleccionada
+   */
   showOptions(event: any, category: Models.Tienda.Category) {
     event.preventDefault();
     console.log('mousedown');

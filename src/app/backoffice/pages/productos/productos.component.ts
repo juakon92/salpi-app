@@ -27,11 +27,18 @@ export class ProductosComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  /**
+   * Método que se ejecuta cuando la vista entra en foco.
+   * Inicializa la lista de productos y carga los datos.
+   */
   ionViewDidEnter() {
     this.products = [];
     this.loadProducts();
   }
 
+  /**
+   * Carga los productos desde Firestore con paginación.
+   */
   async loadProducts() {
     console.log('loadProducts');
     const path = Models.Tienda.pathProducts;
@@ -71,16 +78,27 @@ export class ProductosComponent implements OnInit {
     }
   }
 
+  /**
+   * Carga más productos cuando se activa el scroll infinito.
+   * @param event - Evento de scroll infinito.
+   */
   async loadMore(event: any) {
     console.log('loadMore');
     await this.loadProducts();
     event.target.complete();
   }
 
+  /**
+   * Navega a la vista de creación de un nuevo producto.
+   */
   addProduct() {
     this.router.navigate(['backoffice/ajustes/producto-detalle']);
   }
 
+  /**
+   * Navega a la vista de edición de un producto.
+   * @param product - Producto seleccionado para editar.
+   */
   editProduct(product: Models.Tienda.Product) {
     if (this.enableOptions) {
       this.enableOptions = false;
@@ -92,6 +110,11 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  /**
+   * Habilita las opciones para un producto seleccionado.
+   * @param event - Evento de clic.
+   * @param product - Producto seleccionado.
+   */
   showOptions(event: any, product: Models.Tienda.Product) {
     event.preventDefault();
     console.log('showOptions');
@@ -99,6 +122,9 @@ export class ProductosComponent implements OnInit {
     this.productSelected = product;
   }
 
+  /**
+   * Elimina un producto seleccionado después de confirmar la acción.
+   */
   async delete() {
     console.log('delete -> ', this.productSelected);
     const response = await this.interactionService.presentAlert(

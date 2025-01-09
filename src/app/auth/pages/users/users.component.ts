@@ -8,7 +8,7 @@ import { Models } from 'src/app/models/models';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent  implements OnInit {
+export class UsersComponent implements OnInit {
   private firestoreService = inject(FirestoreService); // Inyecta el servicio FirestoreService para interactuar con la base de datos de Firebase
 
   roles: Models.Auth.Role[] = ['admin', 'client', 'dealer'];
@@ -50,21 +50,28 @@ export class UsersComponent  implements OnInit {
     const path = Models.Auth.PathUsers;
     const numItems = this.numItems;
     let q: Models.Firestore.whereQuery[];
-    q = [ [`roles.${rol}`, '==', true] ]; // Define la consulta para obtener usuarios con el rol seleccionado
+    q = [[`roles.${rol}`, '==', true]]; // Define la consulta para obtener usuarios con el rol seleccionado
     const extras: Models.Firestore.extrasQuery = {
       orderParam: 'date',
       directionSort: 'desc',
       limit: numItems,
-    }
+    };
 
     // Si ya existen usuarios cargados, configuramos la paginación
     if (this.users) {
-      const last = this.users[ this.users.length - 1 ];
-      const snapDoc = await this.firestoreService.getDocument(`${path}/${last.id}`);
+      const last = this.users[this.users.length - 1];
+      const snapDoc = await this.firestoreService.getDocument(
+        `${path}/${last.id}`
+      );
       extras.startAfter = snapDoc;
     }
 
-    const res = await this.firestoreService.getDocumentsQuery<Models.Auth.UserProfile>(path, q, extras); // Realiza la consulta a Firestore para obtener los usuarios
+    const res =
+      await this.firestoreService.getDocumentsQuery<Models.Auth.UserProfile>(
+        path,
+        q,
+        extras
+      ); // Realiza la consulta a Firestore para obtener los usuarios
     this.cargando = false;
     console.log('res -> ', res);
     if (res.size) {
@@ -74,7 +81,7 @@ export class UsersComponent  implements OnInit {
       if (!this.users) {
         this.users = [];
       }
-      res.forEach( item => {
+      res.forEach((item) => {
         this.users.push(item.data());
       });
     } else {
@@ -99,8 +106,12 @@ export class UsersComponent  implements OnInit {
     this.enableMore = false;
     const path = Models.Auth.PathUsers;
     let q: Models.Firestore.whereQuery[];
-    q = [ [`email`, '==', email] ];
-    const response = await this.firestoreService.getDocumentsQuery<Models.Auth.UserProfile>(path, q);
+    q = [[`email`, '==', email]];
+    const response =
+      await this.firestoreService.getDocumentsQuery<Models.Auth.UserProfile>(
+        path,
+        q
+      );
     this.cargando = false;
     if (!response.empty) {
       response.forEach((item) => {

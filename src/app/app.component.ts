@@ -16,7 +16,7 @@ import {
 import { IoniconsService } from './services/ionicons.service';
 import { SidemenuComponent } from './shared/components/sidemenu/sidemenu.component';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { StatusBar, Style } from '@capacitor/status-bar';
+import { StatusBar } from '@capacitor/status-bar';
 
 @Component({
   selector: 'app-root',
@@ -49,11 +49,7 @@ export class AppComponent {
     await this.platform.ready();
     if (this.platform.is('capacitor')) {
       SplashScreen.hide();
-      // StatusBar.setOverlaysWebView({ overlay: true });
       StatusBar.show();
-
-      // StatusBar.setStyle({ style: Style.Light });
-      // StatusBar.setBackgroundColor({color: '#2658b0'})
     }
   }
 }

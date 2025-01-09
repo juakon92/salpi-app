@@ -1,5 +1,5 @@
 import { InteractionService } from './../../../services/interaction.service';
-import { Component, OnInit, inject} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/firebase/authentication.service';
 import { Models } from 'src/app/models/models';
@@ -8,16 +8,15 @@ import { Router } from '@angular/router';
 import { StorageService } from 'src/app/firebase/storage.service';
 import { UserService } from 'src/app/services/user.service';
 
-
 @Component({
   selector: 'app-registro',
   templateUrl: './registro.component.html',
   styleUrls: ['./registro.component.scss'],
 })
-export class RegistroComponent  implements OnInit {
+export class RegistroComponent implements OnInit {
   // Inyecta los servicios necesarios para autenticación, Firestore, almacenamiento y manejo de usuario
   authenticationService: AuthenticationService = inject(AuthenticationService);
-  firestoreService: FirestoreService = inject(  FirestoreService);
+  firestoreService: FirestoreService = inject(FirestoreService);
   storageService: StorageService = inject(StorageService);
   userService: UserService = inject(UserService);
 
@@ -32,9 +31,11 @@ export class RegistroComponent  implements OnInit {
 
   cargando: boolean = false;
 
-  constructor(private fb: FormBuilder,
-              private router: Router,
-              private interactionService: InteractionService) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private interactionService: InteractionService
+  ) {}
 
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   async ngOnInit() {}
@@ -52,18 +53,27 @@ export class RegistroComponent  implements OnInit {
         await this.interactionService.showLoading('Registrando...');
         const foto: File = data.photo;
         this.userService.validateHasProfile = false;
-        const res =  await this.authenticationService.createUser(data.email, data.password); // Crea un nuevo usuario en Firebase Authentication
+        const res = await this.authenticationService.createUser(
+          data.email,
+          data.password
+        ); // Crea un nuevo usuario en Firebase Authentication
         const folder = `PhotosPerfil/${res.user.uid}`;
 
         // Sube la foto a Firebase Storage y obtiene la referencia de la foto subida
-        const snapshot = await this.storageService.uploadFile(folder, foto.name, foto);
-        const url = await this.storageService.getDownloadURL(snapshot.ref.fullPath);
+        const snapshot = await this.storageService.uploadFile(
+          folder,
+          foto.name,
+          foto
+        );
+        const url = await this.storageService.getDownloadURL(
+          snapshot.ref.fullPath
+        );
         console.log('url -> ', url);
 
         // Crea un objeto perfil para actualizar el perfil de usuario en Firebase Authentication
         let profile: Models.Auth.UpdateProfileI = {
           displayName: data.name,
-          photoURL: snapshot.ref.fullPath
+          photoURL: snapshot.ref.fullPath,
         };
 
         await this.authenticationService.updateProfile(profile);
@@ -75,17 +85,24 @@ export class RegistroComponent  implements OnInit {
           age: data.age,
           id: res.user.uid,
           email: data.email,
-          roles: { client: true}
-        }
+          roles: { client: true },
+        };
         console.log('datosUser -> ', datosUser);
-        await this.firestoreService.createDocument(Models.Auth.PathUsers, datosUser, res.user.uid);
+        await this.firestoreService.createDocument(
+          Models.Auth.PathUsers,
+          datosUser,
+          res.user.uid
+        );
         this.interactionService.dismissLoading();
         this.interactionService.showToast('Usuario creado con éxito');
         console.log('usuario creado con éxito');
         this.router.navigate(['/user/perfil']);
       } catch (error) {
         console.log('registrarse error -> ', error);
-        this.interactionService.presentAlert('Error', 'Ocurrió un error, intenta nuevamente');
+        this.interactionService.presentAlert(
+          'Error',
+          'Ocurrió un error, intenta nuevamente'
+        );
       }
     }
     this.cargando = false;
@@ -100,7 +117,10 @@ export class RegistroComponent  implements OnInit {
       // Establece el archivo seleccionado como valor en el campo 'photo' del formulario
       const img: any = files.item(0);
       this.datosForm.controls.photo.setValue(img);
-      console.log('this.datosForm.controls.photo -> ', this.datosForm.controls.photo.value);
+      console.log(
+        'this.datosForm.controls.photo -> ',
+        this.datosForm.controls.photo.value
+      );
     }
   }
 

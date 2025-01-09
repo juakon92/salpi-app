@@ -13,9 +13,9 @@ import { StorageService } from 'src/app/firebase/storage.service';
   templateUrl: './completar-registro.component.html',
   styleUrls: ['./completar-registro.component.scss'],
 })
-export class CompletarRegistroComponent  implements OnInit {
+export class CompletarRegistroComponent implements OnInit {
   authenticationService: AuthenticationService = inject(AuthenticationService);
-  firestoreService:   FirestoreService = inject(  FirestoreService);
+  firestoreService: FirestoreService = inject(FirestoreService);
   storageService: StorageService = inject(StorageService);
 
   cargando: boolean = false;
@@ -31,19 +31,20 @@ export class CompletarRegistroComponent  implements OnInit {
     age: [null, Validators.required],
   });
 
-
-  constructor(private fb: FormBuilder,
-              private router: Router,
-              private interactionService: InteractionService) {
-    this.user =  this.authenticationService.auth.currentUser;
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private interactionService: InteractionService
+  ) {
+    this.user = this.authenticationService.auth.currentUser;
 
     // Inicializa el formulario con la información actual del usuario
     const photo: any = this.user.photoURL;
     this.datosFormCompleteRegistro.setValue({
-    email: this.user.email,
-    name: this.user.displayName,
-    photo: photo,
-    age: null
+      email: this.user.email,
+      name: this.user.displayName,
+      photo: photo,
+      age: null,
     });
   }
 
@@ -54,7 +55,10 @@ export class CompletarRegistroComponent  implements OnInit {
   async completarRegistro() {
     this.cargando = true;
     await this.interactionService.showLoading('Procensando...');
-    console.log('datosFormCompleteRegistro -> ', this.datosFormCompleteRegistro);
+    console.log(
+      'datosFormCompleteRegistro -> ',
+      this.datosFormCompleteRegistro
+    );
 
     // Verifica si el formulario es válido antes de continuar
     if (this.datosFormCompleteRegistro.valid) {
@@ -67,8 +71,14 @@ export class CompletarRegistroComponent  implements OnInit {
         if (typeof data.photo != 'string') {
           const foto: File = data.photo;
           const folder = `PhotosPerfil/${this.user.uid}`;
-          const snapshot = await this.storageService.uploadFile(folder, foto.name, foto);
-          const url = await this.storageService.getDownloadURL(snapshot.ref.fullPath);
+          const snapshot = await this.storageService.uploadFile(
+            folder,
+            foto.name,
+            foto
+          );
+          const url = await this.storageService.getDownloadURL(
+            snapshot.ref.fullPath
+          );
           console.log('url -> ', url);
           photo = snapshot.ref.fullPath; // Actualiza la variable photo con la URL de la foto en Storage
         }
@@ -76,7 +86,7 @@ export class CompletarRegistroComponent  implements OnInit {
         // Crea el objeto de perfil con el nombre y la foto del usuario
         let profile: Models.Auth.UpdateProfileI = {
           displayName: data.name,
-          photoURL: photo
+          photoURL: photo,
         };
 
         const user = this.authenticationService.getCurrentUser();
@@ -89,12 +99,16 @@ export class CompletarRegistroComponent  implements OnInit {
           age: data.age,
           id: user.uid,
           email: data.email,
-          roles: { client: true }
-        }
+          roles: { client: true },
+        };
         console.log('datosUser -> ', datosUser);
 
         // Guarda el perfil del usuario en la colección de usuarios de Firestore
-        await this.firestoreService.createDocument(Models.Auth.PathUsers, datosUser, user.uid);
+        await this.firestoreService.createDocument(
+          Models.Auth.PathUsers,
+          datosUser,
+          user.uid
+        );
         console.log('completado registro con éxito');
 
         // Oculta el mensaje de carga y muestra una notificación de éxito
@@ -103,7 +117,10 @@ export class CompletarRegistroComponent  implements OnInit {
         this.router.navigate(['/user/perfil']);
       } catch (error) {
         console.log('registrarse error -> ', error);
-        this.interactionService.presentAlert('Error', 'Ocurrió un error, intenta nuevamente');
+        this.interactionService.presentAlert(
+          'Error',
+          'Ocurrió un error, intenta nuevamente'
+        );
       }
     }
     this.cargando = false; // Cambia el estado de carga a false al finalizar
@@ -118,7 +135,10 @@ export class CompletarRegistroComponent  implements OnInit {
       // Establece el archivo seleccionado como valor en el campo 'photo' del formulario
       const img: any = files.item(0);
       this.datosFormCompleteRegistro.controls.photo.setValue(img);
-      console.log('this.datosFormCompleteRegistro.controls.photo -> ', this.datosFormCompleteRegistro.controls.photo.value);
+      console.log(
+        'this.datosFormCompleteRegistro.controls.photo -> ',
+        this.datosFormCompleteRegistro.controls.photo.value
+      );
     }
   }
 }

@@ -57,7 +57,7 @@ import { DatefirePipe } from '../shared/pipes/datefire.pipe';
     CategoriaDetailComponent,
     ProductoDetailComponent,
     PedidosComponent,
-    PedidoDetailComponent
+    PedidoDetailComponent,
   ],
   imports: [
     CommonModule,

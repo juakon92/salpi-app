@@ -24,10 +24,6 @@
   <ion-grid fixed>
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" sizeMd="5">
-        <!-- @if (product.images?.length) {
-            <img [alt]="product.name" [src]="product.images[0]" />
-          } -->
-
         <p-galleria
           [value]="product.images"
           [containerStyle]="{ 'max-width': '640px' }"
@@ -36,7 +32,6 @@
           [showIndicators]="product.images?.length > 1"
         >
           <ng-template pTemplate="item" let-item>
-            <!-- <img [src]="item" style="width: 100%;" /> -->
             <p-image
               [src]="item"
               [alt]="product.name"

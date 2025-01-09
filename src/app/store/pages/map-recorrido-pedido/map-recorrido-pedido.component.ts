@@ -107,21 +107,16 @@ export class MapRecorridoPedidoComponent implements OnInit {
 
   async initMap() {
     this.map = await GoogleMap.create({
-      id: 'mymap', // Unique identifier for this map instance
-      element: document.getElementById('map'), // reference to the capacitor-google-map element
-      apiKey: apiKey, // Your Google Maps API Key
+      id: 'mymap',
+      element: document.getElementById('map'),
+      apiKey: apiKey,
       language: 'es',
       config: {
-        //disableDefaultUI: true,
-        // draggable: false,
         center: {
-          // The initial position to be rendered by the map
           lat: -2.861306136001268,
           lng: -78.99730914182649,
         },
-        // tilt: 45,
-
-        zoom: 15, // The initial zoom level to be rendered by the map
+        zoom: 15,
       },
     });
 
@@ -220,11 +215,6 @@ export class MapRecorridoPedidoComponent implements OnInit {
     };
     const id = await this.map.addMarker(this.moto.marker);
     this.moto.id = id;
-    // this.centerMarker(this.myLocation.marker);
-    // this.centerMarkerWithBounds(this.myLocation.marker);
-    // if (!this.readonly) {
-    //   this.showDetailMarker(this.myLocation)
-    // }
   }
 
   centerMarkerWithBounds(marker: Marker) {
@@ -287,10 +277,6 @@ export class MapRecorridoPedidoComponent implements OnInit {
     this.map.setCamera({
       coordinate: marker.coordinate,
       zoom: 16,
-      // bearing: 45,
-      // angle: 45,
-      // animate: true,
-      // animationDuration: 1000
     });
   }
 

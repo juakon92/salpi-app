@@ -21,6 +21,10 @@ export class CarritoPageComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  /**
+   * Carga el estado actual del carrito desde el servicio y suscribe a cambios.
+   * Se actualiza cada vez que hay un cambio en el estado del carrito.
+   */
   loadCarrito() {
     this.carrito = this.carritoService.getCarrito();
     this.carritoService.getCarritoChanges().subscribe((res) => {
@@ -28,6 +32,10 @@ export class CarritoPageComponent implements OnInit {
     });
   }
 
+  /**
+   * Carga la información del pedido desde el servicio y suscribe a cambios.
+   * Se actualiza cada vez que hay un cambio en la información del pedido.
+   */
   loadInfoPedido() {
     this.infoPedido = this.carritoService.getInfoPedido();
     this.carritoService.getInfoPedidoChanges().subscribe((res) => {
@@ -36,6 +44,10 @@ export class CarritoPageComponent implements OnInit {
     });
   }
 
+  /**
+   * Inicia el proceso de realizar el pedido.
+   * Llama al servicio de carrito para realizar el pedido con la información actual.
+   */
   pedir() {
     console.log('pedir infoPedido -> ', this.infoPedido);
     this.carritoService.pedir();

@@ -19,11 +19,12 @@ export class ProductoComponent implements OnInit, OnDestroy {
   roles: Models.Auth.Roles;
 
   private carritoService: CarritoService = inject(CarritoService);
-  count = signal(0);
-  suscriberCarrito: Subscription;
+  count = signal(0); // Cantidad del producto actual en el carrito
+  suscriberCarrito: Subscription; // Subscripción para cambios en el carrito
 
   constructor(private router: Router, private route: ActivatedRoute) {
     const data = this.router.getCurrentNavigation().extras.state as any;
+    // Si el producto fue pasado como estado de navegación, se inicializa directamente
     if (data?.product) {
       console.log('data -> ', data);
       this.router.navigate([], { state: null, replaceUrl: true });
@@ -43,6 +44,9 @@ export class ProductoComponent implements OnInit, OnDestroy {
     this.suscriberCarrito?.unsubscribe();
   }
 
+  /**
+   * Obtiene los parámetros de la ruta activa y carga el producto correspondiente.
+   */
   getParam() {
     this.route.params.subscribe((params: any) => {
       if (params.enlace) {
@@ -52,6 +56,10 @@ export class ProductoComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Carga el producto desde Firestore utilizando su enlace permanente.
+   * @param enlace - El enlace permanente del producto.
+   */
   async loadProduct(enlace: string) {
     const path = Models.Tienda.pathProducts;
     const extras: Models.Firestore.extrasQuery = {
@@ -73,6 +81,9 @@ export class ProductoComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Obtiene los roles del usuario autenticado desde el servicio `UserService`.
+   */
   async getRole() {
     const user = await this.userService.getState();
     if (user) {
@@ -81,12 +92,18 @@ export class ProductoComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Navega al formulario de edición del producto actual.
+   */
   editProduct() {
     this.router.navigate(['/backoffice/ajustes/producto-detalle'], {
       queryParams: { id: this.product.id },
     });
   }
 
+  /**
+   * Obtiene el carrito actual y suscribe a cambios en el mismo.
+   */
   getCarrito() {
     const carrito = this.carritoService.getCarrito();
     this.setCant(carrito);
@@ -95,22 +112,32 @@ export class ProductoComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Actualiza la cantidad del producto actual en el carrito.
+   * @param carrito - El carrito actual.
+   */
   setCant(carrito: Models.Tienda.Carrito) {
     const item = carrito?.items.find(
       (itemExist) => itemExist?.product?.id == this.product?.id
     );
     console.log('item -> ', item);
     if (item) {
-      this.count.set(item.cant); // = item.cant;
+      this.count.set(item.cant);
     } else {
       this.count.set(0);
     }
   }
 
+  /**
+   * Agrega el producto actual al carrito.
+   */
   add() {
     this.carritoService.addItem(this.product);
   }
 
+  /**
+   * Elimina una unidad del producto actual del carrito.
+   */
   remove() {
     this.carritoService.removeItem(this.product);
   }

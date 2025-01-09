@@ -25,7 +25,6 @@ export const newPedido = onDocumentCreated(
       for (let index = 0; index < response.docs.length; index++) {
         const element = response.docs[index];
         const data = element.data() as ModelsFunctions.UserProfile;
-        // send notification
         console.log('send notification -> ', data.id);
         if (data.token) {
           tokens.push(data.token);
@@ -71,11 +70,8 @@ export const cambioEstadoPedido = onDocumentUpdated(
     console.log('cambioEstadoPedido');
     const pedidoBefore = event.data.before.data() as ModelsFunctions.Pedido;
     const pedidoAfter = event.data.after.data() as ModelsFunctions.Pedido;
-    // console.log('pedidoBefore -> ', pedidoBefore);
-    // console.log('pedidoAfter -> ', pedidoAfter);
+
     if (pedidoBefore.state != pedidoAfter.state) {
-      // notificar al usuario que ha cambiado el estado de su pedido
-      // obtener el token del usuario
       const tokens: string[] = [];
       const response = await firestore
         .doc(`Users/${event.params.userId}`)
@@ -97,8 +93,7 @@ export const cambioEstadoPedido = onDocumentUpdated(
           },
           tag: event.params.pedidoId,
         };
-        // if (pedidoAfter.state == 'en camino') {
-        // }
+
         const responseNotifications = await Notifications.sendNotificationPush(
           notificationPush.tokens,
           notificationPush.message,
@@ -134,9 +129,7 @@ export const cambioEstadoPedido = onDocumentUpdated(
           default:
             break;
         }
-        // if (pedidoAfter.state == 'en camino') {
-        //   notificationApp.icono = 'bicycle'
-        // }
+        
         Notifications.sendNotificationApp([data.id], notificationApp);
         console.log(
           'success notifications -> ',

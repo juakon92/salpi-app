@@ -83,8 +83,8 @@ export class PedidoPageComponent implements OnInit, OnDestroy {
   cargando: boolean = true;
 
   pedido: Models.Tienda.Pedido;
-  step: number = null;
-  steps = Models.Tienda.StepsPedido;
+  step: number = null; // Paso actual del estado del pedido
+  steps = Models.Tienda.StepsPedido; // Lista de estados del pedido
 
   constructor(private route: ActivatedRoute) {
     this.user = this.authenticationService.getCurrentUser();
@@ -98,6 +98,9 @@ export class PedidoPageComponent implements OnInit, OnDestroy {
     this.suscriberPedido?.unsubscribe();
   }
 
+  /**
+   * Obtiene los parámetros de la ruta activa y carga el pedido asociado.
+   */
   getParams() {
     this.route.params.subscribe((params: any) => {
       if (params.id) {
@@ -106,12 +109,15 @@ export class PedidoPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Carga el pedido especificado desde Firestore y suscribe a cambios en tiempo real.
+   * @param id - ID del pedido a cargar.
+   */
   async loadPedido(id: string) {
     console.log('loadPedido -> ', id);
     const uid = this.user.uid;
     const path = `${Models.Auth.PathUsers}/${uid}/${Models.Tienda.pathPedidos}/${id}`;
     this.cargando = true;
-    // crear regla en firestore de lectura - crear indice si es necesario
     this.suscriberPedido = this.firestoreService
       .getDocumentChanges<Models.Tienda.Pedido>(path)
       .subscribe((res) => {
@@ -124,6 +130,9 @@ export class PedidoPageComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Calcula el paso actual del pedido en función de su estado.
+   */
   setStep() {
     const step = this.steps.findIndex((step) => step == this.pedido.state);
     this.step = step;

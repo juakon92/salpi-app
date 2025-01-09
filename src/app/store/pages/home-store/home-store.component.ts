@@ -27,6 +27,10 @@ export class HomeStoreComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  /**
+   * Carga las categorías desde Firestore y establece la primera categoría como seleccionada.
+   * También dispara la carga inicial de productos asociados a la primera categoría.
+   */
   loadCategories() {
     const path = Models.Tienda.pathCategories;
     this.categories$ = this.firestoreService.getDocumentsChanges(path);
@@ -39,19 +43,25 @@ export class HomeStoreComponent implements OnInit {
     });
   }
 
+  /**
+   * Maneja el cambio de categoría seleccionada en el segmento de la interfaz.
+   * Resetea los productos actuales y carga los nuevos productos de la categoría seleccionada.
+   */
   segmentChanged() {
     console.log('segmentChanged -> ', this.categorySelected);
     this.products = [];
     this.loadProducts();
   }
 
+  /**
+   * Carga los productos desde Firestore según la categoría seleccionada.
+   * Implementa la paginación para cargar más productos cuando sea necesario.
+   */
   async loadProducts() {
     console.log('loadProducts');
     const path = Models.Tienda.pathProducts;
     const extras: Models.Firestore.extrasQuery = {
-      limit: this.numItems,
-      // orderParam: 'date',
-      // directionSort: 'desc'
+      limit: this.numItems
     };
 
     if (this.products) {
@@ -59,7 +69,6 @@ export class HomeStoreComponent implements OnInit {
       extras.startAfter = last;
     }
 
-    // crear regla - crear indice
     const res =
       await this.firestoreService.getDocumentsQuery<Models.Tienda.Product>(
         path,
@@ -84,6 +93,12 @@ export class HomeStoreComponent implements OnInit {
     }
   }
 
+  /**
+   * Carga más productos cuando el usuario alcanza el final de la lista.
+   * Se activa mediante un evento de desplazamiento.
+   *
+   * @param event Evento disparado al intentar cargar más productos
+   */
   async loadMore(event: any) {
     console.log('loadMore');
     await this.loadProducts();

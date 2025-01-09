@@ -6,7 +6,7 @@ const messaging = getMessaging();
 const firestore = getFirestore();
 
 const sendNotificationPush = async (
-  tokens: string[],
+  tokens: string[], // Lista de tokens de dispositivos receptores de la notificación.
   message: { title: string; content: string; image?: string },
   data: any = {},
   tag: string = null
@@ -22,16 +22,9 @@ const sendNotificationPush = async (
     android: {
       collapseKey: '2',
       notification: {
-        // icon: 'ic_stat_name',
         color: '#05498C',
         priority: 'max',
-        // sticky: true,
         visibility: 'public',
-        // icon: message.image ? message.image : '',
-        // defaultVibrateTimings: false,
-        // defaultSound: true,
-        // sound:"default",
-        // channelId: 'notification'
       },
     },
     apns: {
@@ -42,7 +35,6 @@ const sendNotificationPush = async (
             name: 'default',
             volume: 1,
           },
-          // badge: 1,
         },
       },
     },

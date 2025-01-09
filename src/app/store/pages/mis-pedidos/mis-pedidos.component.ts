@@ -64,7 +64,7 @@ export class MisPedidosComponent implements OnInit {
   firestoreService: FirestoreService = inject(FirestoreService);
   user: User;
 
-  pedidos: QueryDocumentSnapshot<Models.Tienda.Pedido>[];
+  pedidos: QueryDocumentSnapshot<Models.Tienda.Pedido>[]; // Lista de pedidos del usuario
   numItems: number = 3;
   enableMore: boolean = true;
 
@@ -76,6 +76,9 @@ export class MisPedidosComponent implements OnInit {
     this.loadMorePedidos();
   }
 
+  /**
+   * Método para cargar más pedidos desde Firestore, respetando la paginación.
+   */
   async loadMorePedidos() {
     const uid = this.user.uid;
     const path = `${Models.Auth.PathUsers}/${uid}/${Models.Tienda.pathPedidos}`;
@@ -90,7 +93,7 @@ export class MisPedidosComponent implements OnInit {
       extras.startAfter = last;
     }
 
-    // crear regla en firestore de lectura - crear indice si es necesario
+    // Realiza la consulta en Firestore
     const res =
       await this.firestoreService.getDocumentsQuery<Models.Tienda.Pedido>(
         path,
@@ -104,9 +107,6 @@ export class MisPedidosComponent implements OnInit {
       if (this.pedidos) {
         this.pedidos.push(...res.docs);
       }
-      // else {
-      //   this.pedidos = res.docs;
-      // }
     }
 
     if (!this.pedidos) {

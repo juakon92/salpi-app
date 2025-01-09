@@ -27,10 +27,6 @@
         <ion-grid fixed>
           <ion-row class="ion-justify-content-center">
             <ion-col size="12" sizeMd="8">
-              <!-- <ion-list> -->
-              <!-- <ion-list-header>
-                    <ion-label>Productos:</ion-label>
-                  </ion-list-header> -->
 
               @for (item of carrito?.items; track $index) {
               <app-item-carrito [item]="item"></app-item-carrito>

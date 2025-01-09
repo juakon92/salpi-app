@@ -27,11 +27,15 @@ export class PedidosComponent implements OnInit, OnDestroy {
     this.clearSubscribers();
   }
 
+  /**
+   * Carga más pedidos desde Firestore.
+   * Utiliza la paginación para obtener los pedidos en bloques.
+   * @param event - Evento opcional para manejar el scroll infinito.
+   */
   loadMorePedidos(event: any = null) {
     console.log('loadMorePedidos');
 
     const path = Models.Tienda.pathPedidos;
-    // const query: Models.Firestore.whereQuery[] = [['date', '>=', start, 'date', '<=', end]];
     const query: Models.Firestore.whereQuery[] = [
       ['state', '==', 'tomado'],
       ['state', '==', 'asignado'],
@@ -48,7 +52,6 @@ export class PedidosComponent implements OnInit, OnDestroy {
       extras.startAfter = new Date(last.date.seconds * 1000);
     }
 
-    // crear regla e indices
     const subscriberPedidos = this.firestoreService
       .getDocumentsQueryChanges<Models.Tienda.Pedido>(path, query, extras)
       .subscribe((res) => {
@@ -86,6 +89,10 @@ export class PedidosComponent implements OnInit, OnDestroy {
     this.subscribersPedidos.push(subscriberPedidos);
   }
 
+  /**
+   * Limpia todas las suscripciones activas.
+   * Esto es importante para evitar fugas de memoria.
+   */
   clearSubscribers() {
     this.subscribersPedidos.forEach((subscriber) => {
       subscriber?.unsubscribe();

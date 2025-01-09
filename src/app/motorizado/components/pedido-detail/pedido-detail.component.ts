@@ -28,10 +28,16 @@ export class PedidoDetailComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  /**
+   * Toma un pedido asignándolo al usuario actual.
+   * Actualiza el estado del pedido en Firestore a "asignado" y almacena los datos del repartidor.
+   */
   async tomarPedido() {
     await this.interactionService.showLoading('Tomando pedido...');
     try {
       const path = `${Models.Auth.PathUsers}/${this.pedido.uid}/${Models.Tienda.pathPedidos}/${this.pedido.id}`;
+
+      // Datos a actualizar en el documento del pedido
       const updateData: any = {
         state: 'asignado',
         dealer: {
@@ -40,10 +46,10 @@ export class PedidoDetailComponent implements OnInit {
           coordinate: null,
         },
       };
-      // crear regla de actualización
+
+      // Actualiza el documento en Firestore con los nuevos datos
       await this.firestoreService.updateDocument(path, updateData);
       this.interactionService.dismissLoading();
-      // llevar a sección indicada para comenzar a llevar el pedido
     } catch (error) {
       console.error(error);
       this.interactionService.presentAlert(

@@ -14,6 +14,10 @@ export class AllNotificationsComponent implements OnInit, OnDestroy {
   notifications: Models.Notifications.Notification[];
   private subscribersNotifications: Subscription;
 
+  /**
+   * Constructor del componente.
+   * @param modalController - Controlador de modales de Ionic.
+   */
   constructor(private modalController: ModalController) {}
 
   ngOnInit() {
@@ -24,20 +28,30 @@ export class AllNotificationsComponent implements OnInit, OnDestroy {
     this.subscribersNotifications?.unsubscribe();
   }
 
+  /**
+   * Carga las notificaciones iniciales y escucha cambios en tiempo real.
+   */
   loadNotifications() {
     this.notifications = this.notificationsService.getNotications();
     this.subscribersNotifications = this.notificationsService
       .getNoticationsChanges()
       .subscribe((res) => {
         this.notifications = res;
-        // console.log('this.notifications -> ', this.notifications);
       });
   }
 
+  /**
+   * Cierra el modal actual.
+   */
   dismiss() {
     this.modalController.dismiss();
   }
 
+  /**
+   * Solicita cargar más notificaciones.
+   * Este método es útil para implementar scroll infinito.
+   * @param ev - Evento de scroll infinito.
+   */
   loadMore(ev: any) {
     console.log('loadmore');
     this.notificationsService.getMoreNotifications(ev);

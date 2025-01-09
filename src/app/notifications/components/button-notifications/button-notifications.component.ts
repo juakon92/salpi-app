@@ -24,6 +24,9 @@ export class ButtonNotificationsComponent implements OnInit, OnDestroy {
     this.suscriberCount?.unsubscribe();
   }
 
+  /**
+   * Abre un modal para mostrar todas las notificaciones.
+   */
   async openAllNotifications() {
     const modal = await this.modalController.create({
       component: AllNotificationsComponent,
@@ -33,6 +36,10 @@ export class ButtonNotificationsComponent implements OnInit, OnDestroy {
     await modal.present();
   }
 
+  /**
+   * Obtiene el número de notificaciones nuevas.
+   * Escucha cambios en tiempo real para actualizar el contador.
+   */
   getNewNotifications() {
     this.count.set(this.notificationsService.getCount());
     this.suscriberCount = this.notificationsService

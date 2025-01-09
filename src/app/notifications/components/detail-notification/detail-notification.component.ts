@@ -22,12 +22,19 @@ export class DetailNotificationComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  /**
+   * Marca la notificación como vista y redirige al enlace asociado.
+   * También cierra el modal actual.
+   */
   async view() {
     this.router.navigateByUrl(this.notification.enlace);
     this.modalController.dismiss();
     this.notificationsService.view(this.notification);
   }
 
+  /**
+   * Elimina la notificación actual.
+   */
   async delete() {
     console.log('delete()');
     this.notificationsService.delete(this.notification);

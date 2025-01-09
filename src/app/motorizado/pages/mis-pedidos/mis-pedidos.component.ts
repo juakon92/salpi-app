@@ -20,7 +20,7 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
   numItems: number = 2;
   enableMore: boolean = true;
 
-  subscribersPedidos: Subscription[] = [];
+  subscribersPedidos: Subscription[] = []; // Lista de suscripciones para los cambios en los pedidos
   user: User;
 
   constructor() {
@@ -36,12 +36,15 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
     this.clearSubscribers();
   }
 
+  /**
+   * Carga más pedidos del usuario desde Firestore.
+   * Utiliza la paginación para cargar los pedidos en bloques.
+   * @param event - Evento opcional para controlar el scroll infinito.
+   */
   loadMorePedidos(event: any = null) {
     console.log('loadMorePedidos ');
 
     const path = Models.Tienda.pathPedidos;
-    // const query: Models.Firestore.whereQuery[] = [['date', '>=', start, 'date', '<=', end]];
-    // const query: Models.Firestore.whereQuery[] = [['state', '==', 'tomado'], ['state', '==', 'asignado']];
     const query: Models.Firestore.whereQuery[] = [
       ['motorizado.uid', '==', this.user.uid],
     ];
@@ -52,12 +55,13 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
       group: true,
     };
 
+    // Si ya hay pedidos cargados, utiliza el último para la paginación
     if (this.pedidos?.length) {
       const last = this.pedidos[this.pedidos.length - 1];
       extras.startAfter = new Date(last.date.seconds * 1000);
     }
 
-    // crear regla e indices
+    // Realiza la consulta a Firestore
     const subscriberPedidos = this.firestoreService
       .getDocumentsQueryChanges<Models.Tienda.Pedido>(path, query, extras)
       .subscribe((res) => {
@@ -82,6 +86,7 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
         // ordenar por fecha
         this.pedidos.sort((a, b) => b.date?.seconds - a.date?.seconds);
 
+        // Determina si hay más pedidos por cargar
         if (res.length == this.numItems) {
           this.enableMore = true;
         } else {
@@ -95,6 +100,10 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
     this.subscribersPedidos.push(subscriberPedidos);
   }
 
+  /**
+   * Limpia todas las suscripciones activas.
+   * Esto es importante para evitar fugas de memoria.
+   */
   clearSubscribers() {
     this.subscribersPedidos.forEach((subscriber) => {
       subscriber?.unsubscribe();

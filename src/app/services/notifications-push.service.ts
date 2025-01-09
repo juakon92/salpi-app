@@ -26,16 +26,21 @@ export class NotificationsPushService {
 
   constructor(private route: Router) {}
 
+  /**
+   * Inicializa el servicio de notificaciones push.
+   * Solicita permisos para notificaciones y registra el dispositivo si está en una plataforma nativa.
+   * @param user - Usuario autenticado actualmente.
+   */
   init(user: User) {
     this.user = user;
     if (Capacitor.isNativePlatform()) {
       console.log('Initializing NotificationsPushService');
+
+      // Solicita permisos para notificaciones
       PushNotifications.requestPermissions().then((result) => {
         if (result.receive === 'granted') {
-          // Register with Apple / Google to receive push via APNS/FCM
           PushNotifications.register();
         } else {
-          // Show some error
           this.interactionService.presentAlert(
             'Error',
             'Debes habilitar las notificaciones'
@@ -46,36 +51,27 @@ export class NotificationsPushService {
     }
   }
 
+  /**
+   * Agrega listeners para manejar eventos relacionados con notificaciones push.
+   */
   private addListener() {
-    // On success, we should be able to receive notifications
     PushNotifications.addListener('registration', (token: Token) => {
-      // alert('Push registration success, token: ' + token.value);
-      // this.interactionService.presentAlert('Importante', `Registro exitoso, el token es: ${token.value}`);
       this.saveToken(token.value);
       this.enable = true;
     });
 
-    // Some issue with our setup and push will not work
     PushNotifications.addListener('registrationError', (error: any) => {
-      // alert('Error on registration: ' + JSON.stringify(error));
       this.interactionService.presentAlert('Error', `Registro fallido`);
     });
 
-    // Show us the notification payload if the app is open on our device
     PushNotifications.addListener(
       'pushNotificationReceived',
-      (notification: PushNotificationSchema) => {
-        // alert('Push received: ' + JSON.stringify(notification));
-        // this.interactionService.presentAlert('Notificación', `${JSON.stringify(notification)}`)
-      }
+      (notification: PushNotificationSchema) => {}
     );
 
-    // Method called when tapping on a notification
     PushNotifications.addListener(
       'pushNotificationActionPerformed',
       (notification: ActionPerformed) => {
-        // alert('Push action performed: ' + JSON.stringify(notification));
-        // this.interactionService.presentAlert('Notificación en segundo plano', `${JSON.stringify(notification)}`)
         if (notification?.notification?.data?.enlace) {
           this.route.navigateByUrl(notification.notification.data.enlace);
         }
@@ -83,6 +79,10 @@ export class NotificationsPushService {
     );
   }
 
+  /**
+   * Guarda el token de notificación push en Firestore y en el almacenamiento local.
+   * @param token - Token generado por APNS/FCM.
+   */
   private async saveToken(token: string) {
     const path = 'Token';
     console.log('saveToken -> ', token);
@@ -105,6 +105,9 @@ export class NotificationsPushService {
     await this.localStorageService.setData(path, updateDoc);
   }
 
+  /**
+   * Elimina el token de notificación push del almacenamiento local y de Firestore.
+   */
   async deleteToken() {
     console.log('deleteToken');
     try {

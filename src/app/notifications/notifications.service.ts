@@ -17,11 +17,11 @@ export class NotificationsService {
   private interactionService: InteractionService = inject(InteractionService);
   private user: User;
 
-  notifications: Models.Notifications.Notification[];
-  notifications$ = new Subject<Models.Notifications.Notification[]>();
+  notifications: Models.Notifications.Notification[]; // Lista de notificaciones
+  notifications$ = new Subject<Models.Notifications.Notification[]>(); // Observable para notificaciones
   private numItems: number = 6;
   enableMore: boolean = true;
-  private subscribersNotifications: Subscription[] = [];
+  private subscribersNotifications: Subscription[] = []; // Lista de suscripciones activas
 
   count: number = 0;
   count$ = new Subject<number>();
@@ -37,6 +37,10 @@ export class NotificationsService {
     });
   }
 
+  /**
+   * Carga más notificaciones desde Firestore.
+   * @param event - Evento opcional para manejar el scroll infinito.
+   */
   getMoreNotifications(event: any = null) {
     const path = `${Models.Auth.PathUsers}/${this.user.uid}/${Models.Notifications.pathNotificaciones}`;
     const query: Models.Firestore.whereQuery[] = [[]];
@@ -53,7 +57,7 @@ export class NotificationsService {
       console.log('extras.startAfter -> ', extras.startAfter);
     }
 
-    // crear regla e indices
+    // Consulta a Firestore para obtener notificaciones en tiempo real
     const subscriberNotifications = this.firestoreService
       .getDocumentsQueryChanges<Models.Notifications.Notification>(
         path,
@@ -85,7 +89,7 @@ export class NotificationsService {
           this.notifications = res;
         }
 
-        // ordenar por fecha
+        // Ordena las notificaciones por fecha
         this.notifications.sort((a, b) => b.date?.seconds - a.date?.seconds);
 
         if (res.length == this.numItems) {
@@ -111,14 +115,24 @@ export class NotificationsService {
     this.subscribersNotifications.push(subscriberNotifications);
   }
 
+  /**
+   * Obtiene la lista actual de notificaciones.
+   */
   getNotications() {
     return this.notifications;
   }
 
+  /**
+   * Devuelve un observable para los cambios en las notificaciones.
+   */
   getNoticationsChanges() {
     return this.notifications$.asObservable();
   }
 
+  /**
+   * Marca una notificación como vista en Firestore.
+   * @param notification - La notificación a marcar como vista.
+   */
   async view(notification: Models.Notifications.Notification) {
     if (notification.state == 'nueva') {
       const path = `${Models.Auth.PathUsers}/${this.user.uid}/${Models.Notifications.pathNotificaciones}/${notification.id}`;
@@ -132,6 +146,10 @@ export class NotificationsService {
     }
   }
 
+  /**
+   * Elimina una notificación de Firestore y la lista local.
+   * @param notification - La notificación a eliminar.
+   */
   async delete(notification: Models.Notifications.Notification) {
     console.log('delete -> ', notification);
     const response = await this.interactionService.presentAlert(
@@ -158,6 +176,9 @@ export class NotificationsService {
     }
   }
 
+  /**
+   * Obtiene el número de notificaciones nuevas desde Firestore.
+   */
   async getNewCount() {
     console.log('call getNewCount');
     const path = `${Models.Auth.PathUsers}/${this.user.uid}/${Models.Notifications.pathNotificaciones}`;
@@ -171,10 +192,16 @@ export class NotificationsService {
     this.count$.next(this.count);
   }
 
+  /**
+   * Obtiene el número actual de notificaciones nuevas.
+   */
   getCount() {
     return this.count;
   }
 
+  /**
+   * Devuelve un observable para los cambios en el contador de notificaciones.
+   */
   getCountChanges() {
     return this.count$.asObservable();
   }

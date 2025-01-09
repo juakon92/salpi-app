@@ -69,9 +69,9 @@ const apiKey = environment.firebaseConfig.apiKey;
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class MapRecorridoComponent implements OnInit {
-  map: GoogleMap;
+  map: GoogleMap; // Instancia del mapa de Google
   transparency: boolean = false;
-  myLocation: Place;
+  myLocation: Place; // Representa la ubicación del usuario
   estados = Models.Tienda.StepsPedidoMotorizado;
 
   private interactionService: InteractionService = inject(InteractionService);
@@ -83,10 +83,10 @@ export class MapRecorridoComponent implements OnInit {
   suscriberPedido: Subscription;
   pedido: Models.Tienda.Pedido;
 
-  local: Place;
-  home: Place;
+  local: Place; // Representa la ubicación del local
+  home: Place; // Representa la ubicación del cliente
 
-  idWatcher: string;
+  idWatcher: string; // ID para el seguimiento de geolocalización
   user: User;
 
   constructor(
@@ -97,12 +97,20 @@ export class MapRecorridoComponent implements OnInit {
     this.user = this.authenticationService.getCurrentUser();
   }
 
+  /**
+   * Ciclo de vida: Se ejecuta cuando la vista se muestra.
+   * Desactiva el menú principal y activa la transparencia del mapa.
+   */
   ionViewDidEnter() {
     this.menuController.enable(false, 'main');
     this.transparency = true;
     this.initMap();
   }
 
+  /**
+   * Ciclo de vida: Se ejecuta cuando la vista deja de mostrarse.
+   * Limpia recursos como el mapa y las suscripciones.
+   */
   ionViewDidLeave() {
     this.menuController.enable(true, 'main');
     this.transparency = false;
@@ -114,23 +122,21 @@ export class MapRecorridoComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  /**
+   * Inicializa el mapa con configuración básica.
+   */
   async initMap() {
     this.map = await GoogleMap.create({
-      id: 'my-map', // Unique identifier for this map instance
-      element: document.getElementById('map'), // reference to the capacitor-google-map element
+      id: 'my-map',
+      element: document.getElementById('map'),
       apiKey: apiKey,
       language: 'es',
       config: {
-        // disableDefaultUI: true,
-        // draggable: false,
         center: {
-          // The initial position to be rendered by the map
-          lat: -2.861306136001268,
-          lng: -78.99730914182649,
+          lat: 40.2410308,
+          lng: -3.7667117,
         },
-        // tilt: 45,
-
-        zoom: 15, // The initial zoom level to be rendered by the map
+        zoom: 15,
       },
     });
 
@@ -140,6 +146,9 @@ export class MapRecorridoComponent implements OnInit {
     this.getQueryParams();
   }
 
+  /**
+   * Obtiene los parámetros de la URL y carga el pedido correspondiente.
+   */
   getQueryParams() {
     const queryParams = this.route.snapshot.queryParams as any;
     console.log('queryParams -> ', queryParams);
@@ -148,10 +157,14 @@ export class MapRecorridoComponent implements OnInit {
       this.addListeners();
       this.setUbicacionLocal();
       this.initTraking();
-      // this.initTrakingDemo()
     }
   }
 
+  /**
+   * Carga los datos de un pedido desde Firestore.
+   * @param idUser - ID del usuario asociado al pedido.
+   * @param idPedido - ID del pedido.
+   */
   loadPedido(idUser: string, idPedido: string) {
     const path = `${Models.Auth.PathUsers}/${idUser}/${Models.Tienda.pathPedidos}/${idPedido}`;
     this.suscriberPedido = this.firestoreService
@@ -171,6 +184,9 @@ export class MapRecorridoComponent implements OnInit {
       });
   }
 
+  /**
+   * Establece la ubicación del cliente en el mapa.
+   */
   async setUbicacionCliente() {
     if (!this.home) {
       const place: Place = {
@@ -190,12 +206,6 @@ export class MapRecorridoComponent implements OnInit {
           },
         },
       };
-      // const marker: Marker = {
-      //   coordinate: {
-      //     lat: this.pedido.info.direccionEntrega.coordinate.lat,
-      //     lng: this.pedido.info.direccionEntrega.coordinate.lng
-      //   }
-      // }
       const id = await this.map.addMarker(place.marker);
       place.id = id;
       this.home = place;
@@ -231,7 +241,6 @@ export class MapRecorridoComponent implements OnInit {
         }
       }
     }
-    // si tenemos permisos
     console.log('obteniendo posición');
     this.idWatcher = await Geolocation.watchPosition(
       { enableHighAccuracy: true },
@@ -242,7 +251,6 @@ export class MapRecorridoComponent implements OnInit {
           location.coords.latitude,
           location.coords.longitude
         );
-        // this.setMarkerMyPosition(location.coords.latitude, location.coords.longitude)
       }
     );
   }
@@ -282,13 +290,6 @@ export class MapRecorridoComponent implements OnInit {
       breakpoints: [0, 0.25],
     });
     await modal.present();
-    // const {data} = await modal.onWillDismiss();
-    // if (data) {
-    //   const place = data.place as Place
-    //   console.log('dismiss modal -> ', data);
-    //   this.carritoService.setCoordenadasPedido(place.marker.coordinate);
-    //   this.router.navigate(['/store/carrito'])
-    // }
   }
 
   async setMarkerMyPosition(latitude: number, longitude: number) {
@@ -319,7 +320,6 @@ export class MapRecorridoComponent implements OnInit {
     };
     const id = await this.map.addMarker(this.myLocation.marker);
     this.myLocation.id = id;
-    // this.centerMarkerWithBounds(this.myLocation.marker);
   }
 
   centerMarkerWithBounds(marker: Marker) {
@@ -402,7 +402,6 @@ export class MapRecorridoComponent implements OnInit {
 
   initTrakingDemo() {
     this.map.setOnMapClickListener((res) => {
-      // this.setMarkerMyPosition(res.latitude, res.longitude)
       this.updateLocation(res.latitude, res.longitude);
     });
   }
@@ -415,7 +414,6 @@ export class MapRecorridoComponent implements OnInit {
       const updateData = {
         state: this.pedido.state,
       };
-      // crear regla de actualización
       await this.firestoreService.updateDocument(path, updateData);
       this.interactionService.dismissLoading();
     } catch (error) {
@@ -441,8 +439,8 @@ const local: Place = {
       height: 35,
     },
     coordinate: {
-      lat: -2.904086729776945,
-      lng: -78.98409206727841,
+      lat: 40.2410308,
+      lng: -3.7667117,
     },
   },
 };

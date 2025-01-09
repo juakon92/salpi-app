@@ -27,6 +27,9 @@ export class CarritoService {
     this.initInfoPedido();
   }
 
+  /**
+   * Inicializa el carrito de compras.
+   */
   private initCarrito() {
     this.carrito = {
       items: [],
@@ -35,15 +38,17 @@ export class CarritoService {
     };
   }
 
+  /**
+   * Añade un producto al carrito de compras.
+   * @param product - Producto que se desea agregar.
+   */
   addItem(product: Models.Tienda.Product) {
     const index = this.carrito.items.findIndex(
       (itemExist) => itemExist.product.id == product.id
     );
     if (index >= 0) {
-      // agregar cantidad
       this.carrito.items[index].cant++;
     } else {
-      // es nuevo
       this.carrito.items.push({
         cant: 1,
         product,
@@ -54,6 +59,10 @@ export class CarritoService {
     this.carrito$.next(this.carrito);
   }
 
+  /**
+   * Reduce la cantidad o elimina un producto del carrito.
+   * @param product - Producto que se desea eliminar o reducir.
+   */
   removeItem(product: Models.Tienda.Product) {
     const index = this.carrito.items.findIndex(
       (itemExist) => itemExist.product.id == product.id
@@ -70,6 +79,10 @@ export class CarritoService {
     this.carrito$.next(this.carrito);
   }
 
+  /**
+   * Elimina un producto del carrito por completo.
+   * @param product - Producto que se desea eliminar.
+   */
   deleteItem(product: Models.Tienda.Product) {
     const index = this.carrito.items.findIndex(
       (itemExist) => itemExist.product.id == product.id
@@ -82,14 +95,23 @@ export class CarritoService {
     this.carrito$.next(this.carrito);
   }
 
+  /**
+   * Devuelve un observable que emite los cambios en el carrito.
+   */
   getCarritoChanges() {
     return this.carrito$.asObservable();
   }
 
+  /**
+   * Obtiene el estado actual del carrito.
+   */
   getCarrito() {
     return this.carrito;
   }
 
+  /**
+   * Calcula el total de productos y el precio total en el carrito.
+   */
   private getTotal() {
     let total = 0;
     let cantidad = 0;
@@ -101,6 +123,9 @@ export class CarritoService {
     this.carrito.cant = cantidad;
   }
 
+  /**
+   * Carga el carrito desde el almacenamiento local.
+   */
   private async loadCarrito() {
     const path = 'Carrito';
     const data = await this.localStorageService.getData(path);
@@ -113,11 +138,17 @@ export class CarritoService {
     this.carrito$.next(this.carrito);
   }
 
+  /**
+   * Guarda el carrito en el almacenamiento local.
+   */
   private saveCarrito() {
     const path = 'Carrito';
     this.localStorageService.setData(path, this.carrito);
   }
 
+  /**
+   * Inicializa la información del pedido.
+   */
   private initInfoPedido() {
     this.infoPedido = {
       datos: null,
@@ -129,41 +160,65 @@ export class CarritoService {
     };
   }
 
+  /**
+   * Obtiene la información del pedido actual.
+   */
   getInfoPedido() {
     return this.infoPedido;
   }
 
+  /**
+   * Devuelve un observable que emite los cambios en la información del pedido.
+   */
   getInfoPedidoChanges() {
     return this.infoPedido$.asObservable();
   }
 
+  /**
+   * Establece los datos del pedido.
+   * @param datos - Datos del usuario asociados al pedido.
+   */
   setDatosPedido(datos: Models.Tienda.DatosUserPedido) {
     this.infoPedido.datos = datos;
     this.infoPedido$.next(this.infoPedido);
   }
 
+  /**
+   * Establece la fecha de entrega del pedido.
+   * @param fecha - Fecha seleccionada.
+   */
   setFechaEntregaPedido(fecha: Date) {
     this.infoPedido.fechaEntrega = fecha;
     this.infoPedido$.next(this.infoPedido);
   }
 
+  /**
+   * Establece la dirección de entrega del pedido.
+   * @param direccion - Dirección seleccionada.
+   */
   setDireccionPedido(direccion: Models.Tienda.DireccionPedido) {
     this.infoPedido.direccionEntrega = direccion;
     this.infoPedido$.next(this.infoPedido);
   }
 
+  /**
+   * Establece las coordenadas para la entrega del pedido.
+   * @param coordinate - Coordenadas geográficas.
+   */
   setCoordenadasPedido(coordinate: LatLng) {
     console.log('setCoordenadasPedido -> ', coordinate);
     this.infoPedido.direccionEntrega.coordinate = coordinate;
     this.infoPedido$.next(this.infoPedido);
   }
 
+  /**
+   * Realiza un pedido basado en el contenido del carrito y la información del pedido.
+   */
   async pedir() {
     // validaciones adicionales
     if (this.infoPedido?.datos?.id) {
       const uid = this.infoPedido.datos.id;
       const path = `${Models.Auth.PathUsers}/${uid}/${Models.Tienda.pathPedidos}`;
-      // crear regla en firestore
       const pedido: Models.Tienda.Pedido = {
         carrito: this.carrito,
         info: this.infoPedido,
@@ -193,6 +248,9 @@ export class CarritoService {
     }
   }
 
+  /**
+   * Limpia el carrito de compras.
+   */
   clearCarrito() {
     this.initCarrito();
     this.saveCarrito();

@@ -14,10 +14,9 @@ import { RouterModule } from '@angular/router';
   imports: [IonIcon, IonButton, BadgeModule, RouterModule, IonRouterLink],
 })
 export class ButtonCarritoComponent implements OnInit, OnDestroy {
-  count = signal(0);
-
+  count = signal(0); // Variable reactiva para almacenar la cantidad de productos en el carrito
   private carritoService: CarritoService = inject(CarritoService);
-  suscriberCarrito: Subscription;
+  suscriberCarrito: Subscription; // Suscripción para escuchar cambios en el carrito
 
   constructor() {
     this.init();
@@ -30,6 +29,10 @@ export class ButtonCarritoComponent implements OnInit, OnDestroy {
     this.suscriberCarrito?.unsubscribe();
   }
 
+  /**
+   * Inicializa el estado del componente.
+   * Obtiene el carrito actual desde el servicio y escucha los cambios en el carrito.
+   */
   init() {
     const carrito = this.carritoService.getCarrito();
     this.setCount(carrito);
@@ -38,6 +41,10 @@ export class ButtonCarritoComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Actualiza la cantidad de productos en el carrito.
+   * @param carrito - El carrito actual desde el servicio.
+   */
   setCount(carrito: Models.Tienda.Carrito) {
     if (carrito) {
       this.count.set(carrito.cant);

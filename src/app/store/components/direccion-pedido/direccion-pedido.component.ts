@@ -43,6 +43,7 @@ export class DireccionPedidoComponent implements OnInit {
   private carritoService: CarritoService = inject(CarritoService);
   suscriberInfoPedido: Subscription;
 
+  // Modelo para almacenar la dirección del pedido
   direccionPedido: Models.Tienda.DireccionPedido = {
     coordinate: null,
     referencia: '',
@@ -54,6 +55,10 @@ export class DireccionPedidoComponent implements OnInit {
     this.getInfoPedido();
   }
 
+  /**
+   * Escucha los cambios en la información del pedido desde el servicio del carrito.
+   * Actualiza las coordenadas de la dirección si están disponibles.
+   */
   getInfoPedido() {
     this.carritoService.getInfoPedidoChanges().subscribe((info) => {
       if (info?.direccionEntrega?.coordinate) {
@@ -63,6 +68,10 @@ export class DireccionPedidoComponent implements OnInit {
     });
   }
 
+  /**
+   * Establece la dirección del pedido en el servicio del carrito.
+   * Incluye coordenadas y una referencia de la dirección.
+   */
   setDireccionPedido() {
     console.log('setDireccionPedido -> ', this.direccionPedido);
     this.carritoService.setDireccionPedido(this.direccionPedido);

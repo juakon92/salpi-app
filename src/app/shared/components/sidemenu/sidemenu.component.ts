@@ -55,17 +55,22 @@ import { FirestoreService } from 'src/app/firebase/firestore.service';
   ],
 })
 export class SidemenuComponent implements OnInit {
-  menu: Menu[] = [];
-  paletteToggle = false;
+  menu: Menu[] = []; // Lista de opciones del menú
+  paletteToggle = false; // Estado del modo oscuro
   user: User;
-
   roles: Models.Auth.Roles;
-
   version: string = environment.version;
 
   private interactionService: InteractionService = inject(InteractionService);
   private firestoreService: FirestoreService = inject(FirestoreService);
 
+  /**
+   * Constructor del componente.
+   * @param menuController - Controlador para manejar el menú lateral.
+   * @param authenticationService - Servicio de autenticación.
+   * @param userService - Servicio para manejar información del usuario.
+   * @param platform - Servicio para detectar la plataforma.
+   */
   constructor(
     private menuController: MenuController,
     private authenticationService: AuthenticationService,
@@ -74,6 +79,7 @@ export class SidemenuComponent implements OnInit {
   ) {
     this.initDarkMode();
 
+    // Escucha los cambios en el estado de autenticación
     this.authenticationService.authState.subscribe(async (res) => {
       this.user = res;
       if (this.user) {
@@ -83,14 +89,15 @@ export class SidemenuComponent implements OnInit {
       }
       this.initMenu();
     });
-
-    // comparar versión de la app para indicar la novedad e ir a la descarga
     this.compararVersion();
   }
 
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  /**
+   * Inicializa el menú lateral según los roles del usuario.
+   */
   initMenu() {
     console.log('initMenu -> ', this.roles);
     this.menu = [];
@@ -116,6 +123,9 @@ export class SidemenuComponent implements OnInit {
     console.log(' this.menu -> ', this.menu);
   }
 
+  /**
+   * Cierra el menú lateral si está abierto.
+   */
   async closeMenu() {
     const isOpen = await this.menuController.isOpen('sidemenu');
     if (isOpen) {
@@ -123,31 +133,39 @@ export class SidemenuComponent implements OnInit {
     }
   }
 
+  /**
+   * Inicializa el modo oscuro basado en la configuración del sistema.
+   */
   initDarkMode() {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-    // Initialize the dark palette based on the initial
-    // value of the prefers-color-scheme media query
     this.initializeDarkPalette(prefersDark.matches);
 
-    // Listen for changes to the prefers-color-scheme media query
     prefersDark.addEventListener('change', (mediaQuery) =>
       this.initializeDarkPalette(mediaQuery.matches)
     );
   }
 
-  // Check/uncheck the toggle and update the palette based on isDark
+  /**
+   * Establece la paleta de colores según el modo oscuro.
+   * @param isDark - Indica si el modo oscuro está activado.
+   */
   initializeDarkPalette(isDark: any) {
     this.paletteToggle = isDark;
     this.toggleDarkPalette(isDark);
   }
 
-  // Listen for the toggle check/uncheck to toggle the dark palette
+  /**
+   * Cambia el modo oscuro manualmente.
+   * @param ev - Evento del toggle.
+   */
   toggleChange(ev: any) {
     this.toggleDarkPalette(ev.detail.checked);
   }
 
-  // Add or remove the "ion-palette-dark" class on the html element
+  /**
+   * Aplica el tema oscuro o claro a la app.
+   * @param shouldAdd - Indica si se debe activar el modo oscuro.
+   */
   toggleDarkPalette(shouldAdd: boolean) {
     document.documentElement.classList.toggle('ion-palette-dark', shouldAdd);
     if (this.platform.is('capacitor')) {
@@ -161,10 +179,16 @@ export class SidemenuComponent implements OnInit {
     }
   }
 
+  /**
+   * Cierra la sesión del usuario.
+   */
   salir() {
     this.authenticationService.logout();
   }
 
+  /**
+   * Compara la versión actual de la app con la versión más reciente.
+   */
   compararVersion() {
     // if (this.platform.is('capacitor')) {
     const path = 'Version/version';
@@ -202,6 +226,10 @@ export class SidemenuComponent implements OnInit {
     // }
   }
 
+  /**
+  * Redirige al usuario a la tienda de aplicaciones para actualizar la app.
+  * @param res - Información de la nueva versión.
+  */
   async gotoStore(res: Version) {
     await this.interactionService.presentAlert('Importante', res.novedad);
     let enlace: string;

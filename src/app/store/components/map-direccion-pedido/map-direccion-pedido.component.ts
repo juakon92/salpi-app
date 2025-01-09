@@ -61,9 +61,9 @@ const apiKey = environment.firebaseConfig.apiKey;
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class MapDireccionPedidoComponent implements OnInit {
-  map: GoogleMap;
+  map: GoogleMap; // Objeto para manejar el mapa de Google
   transparency: boolean = false;
-  myLocation: Place;
+  myLocation: Place; // Objeto para almacenar información sobre la ubicación del usuario
 
   private interactionService: InteractionService = inject(InteractionService);
   private carritoService: CarritoService = inject(CarritoService);
@@ -92,41 +92,27 @@ export class MapDireccionPedidoComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
+  // Inicializa el mapa de Google Maps con la configuración básica
   async initMap() {
     this.map = await GoogleMap.create({
-      id: 'my-map', // Unique identifier for this map instance
-      element: document.getElementById('map'), // reference to the capacitor-google-map element
-      apiKey: apiKey, // Your Google Maps API Key
+      id: 'my-map',
+      element: document.getElementById('map'),
+      apiKey: apiKey,
       language: 'es',
       config: {
-        // disableDefaultUI: true,
-        // draggable: false,
         center: {
-          // The initial position to be rendered by the map
-          lat: -2.861306136001268,
-          lng: -78.99730914182649,
+          lat: 40.2379641,
+          lng: -3.7536673,
         },
-        // tilt: 45,
-
-        zoom: 15, // The initial zoom level to be rendered by the map
+        zoom: 15,
       },
     });
-    // this.map.setMapType(MapType.Satellite);
 
-    // this.map.enableCurrentLocation(true);
-
-    if (Capacitor.isNativePlatform()) {
-      //  this.map.enableCurrentLocation(true);
-    }
-
-    // this.setMarkerDemo();
-    // this.setPlacesDemo();
-    // this.addListeners();
-    // this.setMyLocation();
+    if (Capacitor.isNativePlatform()) {}
     this.getQueryParams();
-    // this.getCurrentPosition();
   }
 
+  // Obtiene parámetros de la URL para configurar el mapa
   getQueryParams() {
     const queryParams = this.route.snapshot.queryParams as any;
     console.log('queryParams -> ', queryParams);
@@ -143,8 +129,8 @@ export class MapDireccionPedidoComponent implements OnInit {
   setMarkerDemo() {
     const marker: Marker = {
       coordinate: {
-        lat: -2.9045937,
-        lng: -78.9836343,
+        lat: 40.2379641,
+        lng: -3.7536673,
       },
     };
     this.map.addMarker(marker);
@@ -185,6 +171,7 @@ export class MapDireccionPedidoComponent implements OnInit {
     });
   }
 
+  // Configura la interacción para seleccionar la ubicación actual del usuario
   setMyLocation() {
     this.map.setOnMapClickListener(async (res) => {
       console.log('MapClickListener -> ', res);
@@ -255,7 +242,6 @@ export class MapDireccionPedidoComponent implements OnInit {
     };
     const id = await this.map.addMarker(this.myLocation.marker);
     this.myLocation.id = id;
-    // this.centerMarker(this.myLocation.marker);
     this.centerMarkerWithBounds(this.myLocation.marker);
     if (!this.readonly) {
       this.showDetailMarker(this.myLocation);
@@ -264,7 +250,6 @@ export class MapDireccionPedidoComponent implements OnInit {
 
   centerMarkerWithBounds(marker: Marker) {
     console.log('centerMarkerWithBounds');
-    // desplazamiento
     const des: number = 0.0005;
     const northeast = {
       lat: marker.coordinate.lat + des,
@@ -286,11 +271,7 @@ export class MapDireccionPedidoComponent implements OnInit {
     console.log('centerMarker');
     this.map.setCamera({
       coordinate: marker.coordinate,
-      zoom: 16,
-      // bearing: 45,
-      // angle: 45,
-      // animate: true,
-      // animationDuration: 1000
+      zoom: 16
     });
   }
 
@@ -345,8 +326,8 @@ const places: Place[] = [
         height: 35,
       },
       coordinate: {
-        lat: -2.90486435760786,
-        lng: -78.98343901973725,
+        lat: 40.2379641,
+        lng: -3.7536673,
       },
     },
   },
@@ -364,8 +345,8 @@ const places: Place[] = [
         height: 35,
       },
       coordinate: {
-        lat: -2.904086729776945,
-        lng: -78.98409206727841,
+        lat: 40.2379641,
+        lng: -3.7536673,
       },
     },
   },

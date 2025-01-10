@@ -20,14 +20,25 @@
   <br />
   <p-stepper
     #stepper
-    [value]="step"
+    [activeStep]="step"
     [linear]="true"
     class="pasos"
     orientation="vertical"
   >
+    <!-- <p-stepperPanel header="Nuevo">
+    </p-stepperPanel>
+    <p-stepperPanel header="Tomado">
+    </p-stepperPanel>
+    <p-stepperPanel header="En camino">
+    </p-stepperPanel>
+    <p-stepperPanel header="Entregado">
+    </p-stepperPanel> -->
 
     @for (paso of this.steps; track $index) {
-    <p-step-panel header="paso">
+    <p-stepperPanel [header]="paso">
+      <!-- <ng-template pTemplate="header">
+          {{paso}}
+        </ng-template> -->
       @if (paso === 'asignado') {
       <ng-template pTemplate="content">
         <ion-item color="light" lines="none">
@@ -50,7 +61,7 @@
         </ion-button>
       </ng-template>
       }
-    </p-step-panel>
+    </p-stepperPanel>
     }
   </p-stepper>
 

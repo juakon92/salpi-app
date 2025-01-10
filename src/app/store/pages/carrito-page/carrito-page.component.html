@@ -18,7 +18,7 @@
   </ion-header>
 
   <p-stepper orientation="vertical">
-    <p-step-panel header="Productos">
+    <p-stepperPanel header="Productos">
       <ng-template
         pTemplate="content"
         let-nextCallback="nextCallback"
@@ -27,12 +27,9 @@
         <ion-grid fixed>
           <ion-row class="ion-justify-content-center">
             <ion-col size="12" sizeMd="8">
-
               @for (item of carrito?.items; track $index) {
               <app-item-carrito [item]="item"></app-item-carrito>
               }
-
-              <!-- </ion-list> -->
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -48,20 +45,16 @@
           </ion-chip>
         </div>
       </ng-template>
-    </p-step-panel>
-    <p-step-panel header="Datos">
+    </p-stepperPanel>
+    <p-stepperPanel header="Datos">
       <ng-template
         pTemplate="content"
         let-prevCallback="prevCallback"
         let-nextCallback="nextCallback"
         let-index="index"
       >
-        <!-- <div class="flex flex-column h-12rem">
-                <div class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"> -->
         <!-- Content II -->
         <app-datos-pedido></app-datos-pedido>
-        <!-- </div>
-            </div> -->
         <div class="flex pt-4 justify-content-between">
           <ion-chip
             (click)="prevCallback.emit()"
@@ -83,21 +76,15 @@
           </ion-chip>
         </div>
       </ng-template>
-    </p-step-panel>
-    <p-step-panel header="Fecha de entrega">
+    </p-stepperPanel>
+    <p-stepperPanel header="Fecha de entrega">
       <ng-template
         pTemplate="content"
         let-prevCallback="prevCallback"
         let-nextCallback="nextCallback"
         let-index="index"
       >
-        <!-- <div class="flex flex-column h-12rem">
-              <div class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"> -->
-        <!-- Content II -->
         <app-fecha-pedido></app-fecha-pedido>
-        <!-- <app-fecha-pedido></app-fecha-pedido> -->
-        <!-- </div>
-          </div> -->
         <div class="flex pt-4 justify-content-between">
           <ion-chip
             (click)="prevCallback.emit()"
@@ -119,8 +106,8 @@
           </ion-chip>
         </div>
       </ng-template>
-    </p-step-panel>
-    <p-step-panel header="Dirección de entrega">
+    </p-stepperPanel>
+    <p-stepperPanel header="Dirección de entrega">
       <ng-template
         pTemplate="content"
         let-prevCallback="prevCallback"
@@ -149,8 +136,8 @@
           </ion-chip>
         </div>
       </ng-template>
-    </p-step-panel>
-    <p-step-panel header="Confirmación">
+    </p-stepperPanel>
+    <p-stepperPanel header="Confirmación">
       <ng-template
         pTemplate="content"
         let-prevCallback="prevCallback"
@@ -240,7 +227,7 @@
           </ion-row>
         </ion-grid>
       </ng-template>
-    </p-step-panel>
+    </p-stepperPanel>
   </p-stepper>
 </ion-content>
 
